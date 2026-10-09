@@ -1,0 +1,5085 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5" creationDateTime="2026-10-09T11:52:33" />
+  <contentHeader name="PlcProject" modificationDateTime="2026-10-09T11:52:33">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+  </contentHeader>
+  <types>
+    <dataTypes>
+      <dataType name="ST_DriveFeedback">
+        <baseType>
+          <struct>
+            <variable name="bReadyForPower">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="bUnderTorque">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="bFault">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_DriveFeedback :
+STRUCT
+    bReadyForPower  : BOOL;     // bit 14 OR bit 15
+    bUnderTorque    : BOOL;     // bit 14 AND bit 15
+    bFault          : BOOL;     // bit 13
+END_STRUCT
+END_TYPE
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="E_ServoSeqState">
+        <baseType>
+          <enum>
+            <values>
+              <value name="Idle" value="0" />
+              <value name="Positioning" value="1" />
+              <value name="GearingIn" value="2" />
+              <value name="Synced" value="3" />
+              <value name="VmRunning" value="4" />
+              <value name="VmSpeedChange" value="5" />
+              <value name="VmHalting" value="6" />
+              <value name="Ungearing" value="7" />
+              <value name="AbortVm" value="8" />
+              <value name="AbortSlaves" value="9" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_ServoSeqState :
+(
+    Idle := 0,      // all at standstill, ungeared
+    Positioning,    // Ax1 -&gt; offset 1, Ax2 -&gt; offset 2, VM -&gt; 0
+    GearingIn,      // Ax1, Ax2 gear in to VM, absolute to set point, 1:1
+    Synced,         // geared, VM at standstill
+    VmRunning,      // VM velocity at speed command
+    VmSpeedChange,  // one scan: re-enter VmRunning to apply a new speed
+    VmHalting,      // VM decelerates to standstill
+    Ungearing,      // slaves halted, gearing ended
+    AbortVm,        // VM stopped at abort deceleration
+    AbortSlaves     // slaves stopped at abort deceleration, gearing ended
+);
+END_TYPE
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="ST_AxisCyclicStatus">
+        <baseType>
+          <struct>
+            <variable name="DataValid">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Homed">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Standstill">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="PowerReady">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="PowerOn">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="HasError">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="HasWarning">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="AxisFollowCommand">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="InPosition">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="InVelocity">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="InTorque">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="InSyncWindow">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="InSynchronization">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="OverrideIsZero">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="TorqueCtrlPosVelLim">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="TorqueCtrlNegVelLim">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="ActualPos">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="ActualVel">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="ActualTRQ">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="ActualTRQPercent">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="DriveStatusWord">
+              <type>
+                <WORD />
+              </type>
+            </variable>
+            <variable name="DeviceErrorCode">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="PlcOpenState">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_AxisCyclicStatus :
+STRUCT
+    // Status bits
+    DataValid           : BOOL;     // cyclic data is valid
+    Homed               : BOOL;     // axis is referenced
+    Standstill          : BOOL;     // axis does not move (within standstill window)
+    PowerReady          : BOOL;     // drive is ready for power up
+    PowerOn             : BOOL;     // axis has power and is actively controlled
+    HasError            : BOOL;     // error pending at the axis
+    HasWarning          : BOOL;     // warning pending at the axis
+    AxisFollowCommand   : BOOL;     // axis follows the control's command values
+    InPosition          : BOOL;     // at target position
+    InVelocity          : BOOL;     // at target velocity
+    InTorque            : BOOL;     // at target torque
+    InSyncWindow        : BOOL;     // slave/master command difference within the InSync window
+    InSynchronization   : BOOL;     // slave follows its master and has reached the master command value
+    OverrideIsZero      : BOOL;     // velocity override is zero
+    TorqueCtrlPosVelLim : BOOL;     // torque control, positive velocity limit reached
+    TorqueCtrlNegVelLim : BOOL;     // torque control, negative velocity limit reached
+    // Actual values
+    ActualPos           : LREAL;    // actual position
+    ActualVel           : LREAL;    // actual velocity
+    ActualTRQ           : LREAL;    // actual torque
+    ActualTRQPercent    : LREAL;    // actual torque in % of rated torque (S-0-0533)
+    DriveStatusWord     : WORD;     // drive status word (bit 15 power section ready, bit 13 fault)
+    DeviceErrorCode     : UDINT;    // drive diagnostic number (16#FFFFFFFF with no drive connected)
+    // State machine
+    PlcOpenState        : UDINT;    // PLCopen state (values not documented; not used)
+END_STRUCT
+END_TYPE
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="ST_AxisRtConfig">
+        <baseType>
+          <struct>
+            <variable name="bValid">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="udiRevision">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="astAxis">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ST_AxisRtOffsets" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_AxisRtConfig :
+STRUCT
+    bValid      : BOOL;     // node open and map read: readers may read
+    udiRevision : UDINT;    // map revision, passed to BeginAccess
+    astAxis     : ARRAY[0..GVL_Axes.LAST_AXIS] OF ST_AxisRtOffsets;     // offsets per axis
+END_STRUCT
+END_TYPE
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="ST_AxisRtOffsets">
+        <baseType>
+          <struct>
+            <variable name="bComplete">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="audiOffset">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_AxisRtMap.LAST_FIELD" />
+                  <baseType>
+                    <UDINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="abFound">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_AxisRtMap.LAST_FIELD" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_AxisRtOffsets :
+STRUCT
+    bComplete   : BOOL;     // every field was found in the map: the axis can be read
+    audiOffset  : ARRAY[0..GVL_AxisRtMap.LAST_FIELD] OF UDINT;  // byte offset of each field in the buffer
+    abFound     : ARRAY[0..GVL_AxisRtMap.LAST_FIELD] OF BOOL;   // diag: field found on a byte boundary
+END_STRUCT
+END_TYPE
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="E_MachineState">
+        <baseType>
+          <enum>
+            <values>
+              <value name="Off" value="0" />
+              <value name="TurningOn" value="1" />
+              <value name="Idle" value="2" />
+              <value name="Starting" value="3" />
+              <value name="Running" value="4" />
+              <value name="Stopping" value="5" />
+              <value name="Holding" value="6" />
+              <value name="Hold" value="7" />
+              <value name="UnHolding" value="8" />
+              <value name="Aborting" value="9" />
+              <value name="Aborted" value="10" />
+              <value name="Resetting" value="11" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_MachineState :
+(
+    Off := 0,
+    TurningOn,
+    Idle,
+    Starting,
+    Running,
+    Stopping,
+    Holding,
+    Hold,
+    UnHolding,
+    Aborting,
+    Aborted,
+    Resetting
+);
+END_TYPE
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="ST_StateClientData">
+        <baseType>
+          <struct>
+            <variable name="bEnabled">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="bOn">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="bOff">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="bStart">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="bStop">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="bHold">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="bAbort">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="bReset">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="eStateEcho">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+            </variable>
+            <variable name="bDone">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_StateClientData :
+STRUCT
+    bEnabled    : BOOL;             // client takes part in AllDone and the request ORs (FALSE until a unit drives it)
+    bOn         : BOOL;             // request: turn machine on
+    bOff        : BOOL;             // request: turn machine off (acts in Idle)
+    bStart      : BOOL;             // request: start production
+    bStop       : BOOL;             // request: controlled stop
+    bHold       : BOOL;             // request: hold while TRUE
+    bAbort      : BOOL;             // request: abort
+    uiAbortCode : UINT;             // reason for bAbort, unit specific
+    bReset      : BOOL;             // request: reset after abort
+    eStateEcho  : E_MachineState;   // machine state the unit is acting on
+    bDone       : BOOL;             // unit has finished eStateEcho
+END_STRUCT
+END_TYPE
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </dataType>
+    </dataTypes>
+    <pous>
+      <pou name="FB_DriveSupplyMgr" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="itfClient">
+              <type>
+                <derived name="I_StateClient" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">GVL_State.aClients[GVL_State.CLIENT_DRIVE_HW]</xhtml>
+              </documentation>
+            </variable>
+            <variable name="eMachineState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">machine state to follow (from the caller: the broadcast, or a sub-manager's state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="wSupplyStatus">
+              <type>
+                <WORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">supply unit status word S-0-2058 (S-0-1720.0.2)</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <inOutVars>
+            <variable name="wSupplyCtrl">
+              <type>
+                <WORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">supply unit control word S-0-2057 (S-0-1720.0.1)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="awDriveStatus">
+              <type>
+                <derived name="ARRAY[*] OF WORD" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">drive status words, one per drive</xhtml>
+              </documentation>
+            </variable>
+            <variable name="awDriveDcBusCtrl">
+              <type>
+                <derived name="ARRAY[*] OF WORD" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">drive DC bus power control S-0-0240, one per drive</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <outputVars>
+            <variable name="bSupplyInOperation">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: supply in operation mode (DC bus up)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bSupplyOff">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: supply mains off</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAllReadyForPower">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: every drive ready for power</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAnyUnderTorque">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: some drive under torque</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAnyDriveFault">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: some drive faulted</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bSupplyFault">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: supply internal error or supply control error</xhtml>
+              </documentation>
+            </variable>
+            <variable name="uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">abort code currently requested, 0 = none</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="_eMachineState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">eMachineState, read once per scan</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_stDrive">
+              <type>
+                <derived name="ST_DriveFeedback" />
+              </type>
+            </variable>
+            <variable name="_bAllReady">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bAnyTorque">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bAnyDriveFault">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_iFirstFaultDrive">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="_iDrive">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="_bSupplyInOp">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bSupplyOff">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bSupplyError">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">internal supply unit error</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_bSupplyCtrlError">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">supply control FB error (invalid input, mode timeout)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_bFaultAbortActive">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">fault aborts are raised in this state</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_bAbort">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="_bDone">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bWantOn">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bSupplyCmd">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">supply to operation (self-holding)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_bSupplyEnable">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_eTargetMode">
+              <type>
+                <derived name="MB_POWERSUPPLY_TARGET_MODE" />
+              </type>
+            </variable>
+            <variable name="_fbSupply">
+              <type>
+                <derived name="MB_PowerSupplyDriveIntegrated" />
+              </type>
+            </variable>
+            <variable name="_fbStateReq">
+              <type>
+                <derived name="FB_StateRequest" />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="MASK_DC_BUS_POWER">
+              <type>
+                <WORD />
+              </type>
+              <initialValue>
+                <simpleValue value="16#0001" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">S-0-0240 bit 0: DC bus power enabled</xhtml>
+              </documentation>
+            </variable>
+            <variable name="NO_DRIVE">
+              <type>
+                <DINT />
+              </type>
+              <initialValue>
+                <simpleValue value="-1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">drives are numbered from 0</xhtml>
+              </documentation>
+            </variable>
+            <variable name="SUPPLY_MODE_TIMEOUT">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#10S" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">max time per supply mode change (supervised by the FB)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ABORT_NONE">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="ABORT_SUPPLY_CTRL">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="100" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">supply did not reach its target mode / invalid input</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ABORT_SUPPLY_FAULT">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="101" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">supply unit internal error</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ABORT_DRIVE_FAULT">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="110" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">+ drive index</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_DriveSupplyMgr
+VAR_INPUT
+    itfClient       : I_StateClient;    // GVL_State.aClients[GVL_State.CLIENT_DRIVE_HW]
+    eMachineState : E_MachineState;   // machine state to follow (from the caller: the broadcast, or a sub-manager's state)
+    wSupplyStatus   : WORD;             // supply unit status word S-0-2058 (S-0-1720.0.2)
+END_VAR
+VAR_IN_OUT
+    wSupplyCtrl     : WORD;             // supply unit control word S-0-2057 (S-0-1720.0.1)
+    awDriveStatus   : ARRAY[*] OF WORD; // drive status words, one per drive
+    awDriveDcBusCtrl: ARRAY[*] OF WORD; // drive DC bus power control S-0-0240, one per drive
+END_VAR
+VAR_OUTPUT
+    bSupplyInOperation : BOOL;          // diag: supply in operation mode (DC bus up)
+    bSupplyOff      : BOOL;             // diag: supply mains off
+    bAllReadyForPower : BOOL;           // diag: every drive ready for power
+    bAnyUnderTorque : BOOL;             // diag: some drive under torque
+    bAnyDriveFault  : BOOL;             // diag: some drive faulted
+    bSupplyFault    : BOOL;             // diag: supply internal error or supply control error
+    uiAbortCode     : UINT;             // abort code currently requested, 0 = none
+END_VAR
+VAR
+    _eMachineState  : E_MachineState;   // eMachineState, read once per scan
+    _stDrive        : ST_DriveFeedback;
+    _bAllReady      : BOOL;
+    _bAnyTorque     : BOOL;
+    _bAnyDriveFault : BOOL;
+    _iFirstFaultDrive : DINT;
+    _iDrive         : DINT;
+    _bSupplyInOp    : BOOL;
+    _bSupplyOff     : BOOL;
+    _bSupplyError   : BOOL;             // internal supply unit error
+    _bSupplyCtrlError : BOOL;           // supply control FB error (invalid input, mode timeout)
+
+    _bFaultAbortActive : BOOL;          // fault aborts are raised in this state
+    _bAbort         : BOOL;
+    _uiAbortCode    : UINT;
+    _bDone          : BOOL;
+
+    _bWantOn        : BOOL;
+    _bSupplyCmd     : BOOL;             // supply to operation (self-holding)
+    _bSupplyEnable  : BOOL;
+    _eTargetMode    : MB_POWERSUPPLY_TARGET_MODE;
+
+    _fbSupply       : MB_PowerSupplyDriveIntegrated;
+    _fbStateReq     : FB_StateRequest;
+END_VAR
+VAR CONSTANT
+    MASK_DC_BUS_POWER   : WORD := 16#0001;  // S-0-0240 bit 0: DC bus power enabled
+    NO_DRIVE            : DINT := -1;     // drives are numbered from 0
+    SUPPLY_MODE_TIMEOUT : TIME := T#10S;    // max time per supply mode change (supervised by the FB)
+    ABORT_NONE          : UINT := 0;
+    ABORT_SUPPLY_CTRL   : UINT := 100;      // supply did not reach its target mode / invalid input
+    ABORT_SUPPLY_FAULT  : UINT := 101;      // supply unit internal error
+    ABORT_DRIVE_FAULT   : UINT := 110;      // + drive index
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">_eMachineState := eMachineState;     // read once per scan
+
+// ===== 1. Read status =====
+_bAllReady        := TRUE;
+_bAnyTorque       := FALSE;
+_bAnyDriveFault   := FALSE;
+_iFirstFaultDrive := NO_DRIVE;
+FOR _iDrive := LOWER_BOUND(awDriveStatus, 1) TO UPPER_BOUND(awDriveStatus, 1) DO
+    _stDrive := Fn_DriveFeedback(wStatus := awDriveStatus[_iDrive]);
+    _bAllReady  := _bAllReady AND _stDrive.bReadyForPower;
+    _bAnyTorque := _bAnyTorque OR _stDrive.bUnderTorque;
+    IF _stDrive.bFault THEN
+        _bAnyDriveFault := TRUE;
+        IF _iFirstFaultDrive = NO_DRIVE THEN
+            _iFirstFaultDrive := _iDrive;
+        END_IF
+    END_IF
+END_FOR
+
+// Supply state from the previous call of the supply FB
+_bSupplyInOp      := _fbSupply.ActualMode = MB_POWERSUPPLY_ACTUAL_MODE.OPERATION_MODE;
+_bSupplyOff       := _fbSupply.ActualMode = MB_POWERSUPPLY_ACTUAL_MODE.MAINS_OFF;
+_bSupplyError     := _fbSupply.PowerSupplyError;
+_bSupplyCtrlError := _fbSupply.Error;
+
+// ===== 2. Faults -&gt; abort request =====
+// Not raised while aborting, aborted or resetting: a fault that is still present must not
+// block the reset that clears it. A fault that survives the reset leaves this client not
+// done, and the manager's Resetting timeout aborts again.
+_bFaultAbortActive := _eMachineState &lt;&gt; E_MachineState.Aborting
+                      AND _eMachineState &lt;&gt; E_MachineState.Aborted
+                      AND _eMachineState &lt;&gt; E_MachineState.Resetting;
+
+_uiAbortCode := ABORT_NONE;
+IF _bSupplyError THEN
+    _uiAbortCode := ABORT_SUPPLY_FAULT;
+ELSIF _bAnyDriveFault THEN
+    _uiAbortCode := ABORT_DRIVE_FAULT + DINT_TO_UINT(_iFirstFaultDrive);
+ELSIF _bSupplyCtrlError THEN
+    _uiAbortCode := ABORT_SUPPLY_CTRL;
+END_IF
+_bAbort := _bFaultAbortActive AND _uiAbortCode &lt;&gt; ABORT_NONE;
+
+// ===== 3. Done for the current machine state =====
+CASE _eMachineState OF
+    E_MachineState.Off:
+        _bDone := NOT _bSupplyCmd AND _bSupplyOff;
+
+    E_MachineState.TurningOn:
+        _bDone := _bSupplyInOp;
+
+    E_MachineState.Aborting:
+        _bDone := NOT _bAnyTorque AND NOT _bSupplyCmd AND _bSupplyOff;
+
+    E_MachineState.Resetting:
+        _bDone := NOT _bSupplyError AND NOT _bSupplyCtrlError AND NOT _bAnyDriveFault AND _bSupplyInOp;
+
+ELSE
+    _bDone := TRUE;     // nothing to do beyond holding the supply state
+END_CASE
+
+// ===== 4. Command levels =====
+_bWantOn := _eMachineState &lt;&gt; E_MachineState.Off
+            AND _eMachineState &lt;&gt; E_MachineState.Aborted
+            AND _eMachineState &lt;&gt; E_MachineState.Aborting;
+
+// Switch on only when every drive is ready, then hold; never switch off under torque
+_bSupplyCmd := (_bWantOn AND (_bSupplyCmd OR _bAllReady))
+               OR (_bSupplyCmd AND _bAnyTorque);
+
+IF _bSupplyCmd THEN
+    _eTargetMode := MB_POWERSUPPLY_TARGET_MODE.OPERATION_MODE;
+ELSE
+    _eTargetMode := MB_POWERSUPPLY_TARGET_MODE.MAINS_OFF_NO_DISCHARGE;
+END_IF
+
+// Keep the FB enabled until the supply is really off. In Resetting, a supply control error
+// holds Enable off, which is the documented way to clear the FB's error.
+_bSupplyEnable := (_bSupplyCmd OR NOT _bSupplyOff)
+                  AND NOT (_eMachineState = E_MachineState.Resetting AND _bSupplyCtrlError);
+
+// DC bus power to every drive while the supply is in operation
+FOR _iDrive := LOWER_BOUND(awDriveDcBusCtrl, 1) TO UPPER_BOUND(awDriveDcBusCtrl, 1) DO
+    IF _bSupplyInOp THEN
+        awDriveDcBusCtrl[_iDrive] := awDriveDcBusCtrl[_iDrive] OR MASK_DC_BUS_POWER;
+    ELSE
+        awDriveDcBusCtrl[_iDrive] := awDriveDcBusCtrl[_iDrive] AND NOT MASK_DC_BUS_POWER;
+    END_IF
+END_FOR
+
+// ===== 5. Outputs, then sub-FBs =====
+bSupplyInOperation := _bSupplyInOp;
+bSupplyOff         := _bSupplyOff;
+bAllReadyForPower  := _bAllReady;
+bAnyUnderTorque    := _bAnyTorque;
+bAnyDriveFault     := _bAnyDriveFault;
+bSupplyFault       := _bSupplyError OR _bSupplyCtrlError;
+uiAbortCode        := _uiAbortCode;
+
+_fbSupply(
+    Enable       := _bSupplyEnable,
+    TargetMode   := _eTargetMode,
+    Timeout      := SUPPLY_MODE_TIMEOUT,
+    InProcStatus := wSupplyStatus,
+    OutProcCtrl  := wSupplyCtrl);
+_fbStateReq(
+    itfClient   := itfClient,
+    bAbort      := _bAbort,
+    uiAbortCode := _uiAbortCode,
+    eStateEcho  := _eMachineState,
+    bDone       := _bDone);
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="Fn_DriveFeedback" pouType="function">
+        <interface>
+          <returnType>
+            <derived name="ST_DriveFeedback" />
+          </returnType>
+          <inputVars>
+            <variable name="wStatus">
+              <type>
+                <WORD />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">drive status word</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars constant="true">
+            <variable name="MASK_FAULT">
+              <type>
+                <WORD />
+              </type>
+              <initialValue>
+                <simpleValue value="16#2000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">bit 13</xhtml>
+              </documentation>
+            </variable>
+            <variable name="MASK_BIT_14">
+              <type>
+                <WORD />
+              </type>
+              <initialValue>
+                <simpleValue value="16#4000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">bit 14</xhtml>
+              </documentation>
+            </variable>
+            <variable name="MASK_BIT_15">
+              <type>
+                <WORD />
+              </type>
+              <initialValue>
+                <simpleValue value="16#8000" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">bit 15</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION Fn_DriveFeedback : ST_DriveFeedback
+VAR_INPUT
+    wStatus     : WORD;     // drive status word
+END_VAR
+VAR CONSTANT
+    MASK_FAULT  : WORD := 16#2000;  // bit 13
+    MASK_BIT_14 : WORD := 16#4000;  // bit 14
+    MASK_BIT_15 : WORD := 16#8000;  // bit 15
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Fn_DriveFeedback.bReadyForPower := (wStatus AND (MASK_BIT_14 OR MASK_BIT_15)) &lt;&gt; 0;
+Fn_DriveFeedback.bUnderTorque   := (wStatus AND (MASK_BIT_14 OR MASK_BIT_15)) = (MASK_BIT_14 OR MASK_BIT_15);
+Fn_DriveFeedback.bFault         := (wStatus AND MASK_FAULT) &lt;&gt; 0;
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="PRG_Main" pouType="program">
+        <interface>
+          <localVars>
+            <variable name="fbRtMem">
+              <type>
+                <derived name="DL_MemUser" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">RT node access, shared by the axis map and readers</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stAxisRtConfig">
+              <type>
+                <derived name="ST_AxisRtConfig" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">RT read configuration from fbAxisRtMap</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fbAxisRtMap">
+              <type>
+                <derived name="FB_AxisRtMap" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">opens motion/realtime/cyclicStatusData, reads its map</xhtml>
+              </documentation>
+            </variable>
+            <variable name="afbAxisRtRead">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="FB_AxisRtRead" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">one reader per axis -&gt; GVL_Axes.astStatus</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAxisRtReadFault">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">some reader failed: remap</xhtml>
+              </documentation>
+            </variable>
+            <variable name="iAxis">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="fbStateManager">
+              <type>
+                <derived name="FB_StateManager" />
+              </type>
+            </variable>
+            <variable name="fbHmiStateReq">
+              <type>
+                <derived name="FB_StateRequest" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">HMI is just another client</xhtml>
+              </documentation>
+            </variable>
+            <variable name="fbDriveSupply">
+              <type>
+                <derived name="FB_DriveSupplyMgr" />
+              </type>
+            </variable>
+            <variable name="fbServoAxes">
+              <type>
+                <derived name="FB_ServoAxisMgr" />
+              </type>
+            </variable>
+            <variable name="fbServoMotion">
+              <type>
+                <derived name="FB_ServoMotionSeq" />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="HMI_ABORT_CODE">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">operator abort</xhtml>
+              </documentation>
+            </variable>
+            <variable name="MODULO">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="360.0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">servo axes modulo</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">PROGRAM PRG_Main
+VAR
+    fbRtMem         : DL_MemUser;           // RT node access, shared by the axis map and readers
+    stAxisRtConfig  : ST_AxisRtConfig;      // RT read configuration from fbAxisRtMap
+    fbAxisRtMap     : FB_AxisRtMap;         // opens motion/realtime/cyclicStatusData, reads its map
+    afbAxisRtRead   : ARRAY[0..GVL_Axes.LAST_AXIS] OF FB_AxisRtRead;   // one reader per axis -&gt; GVL_Axes.astStatus
+    bAxisRtReadFault : BOOL;                // some reader failed: remap
+    iAxis           : INT;
+    fbStateManager  : FB_StateManager;
+    fbHmiStateReq   : FB_StateRequest;      // HMI is just another client
+    fbDriveSupply   : FB_DriveSupplyMgr;
+    fbServoAxes     : FB_ServoAxisMgr;
+    fbServoMotion   : FB_ServoMotionSeq;
+END_VAR
+VAR CONSTANT
+    HMI_ABORT_CODE  : UINT := 1;            // operator abort
+    MODULO          : LREAL := 360.0;       // servo axes modulo
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// ----- Axis status from the Data Layer RT -----
+// The map FB opens the node and builds the config; each reader then reads one axis.
+// A reader failure (last scan) makes the map FB close, reopen and remap.
+fbAxisRtMap(
+    bEnable    := TRUE,
+    bReadFault := bAxisRtReadFault,
+    asAxisName := GVL_Axes.asAxisName,
+    fbMem      := fbRtMem,
+    stConfig   := stAxisRtConfig);
+bAxisRtReadFault := FALSE;
+FOR iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+    afbAxisRtRead[iAxis](
+        iAxis     := iAxis,
+        fbMem     := fbRtMem,
+        stConfig  := stAxisRtConfig,
+        astStatus := GVL_Axes.astStatus);
+    bAxisRtReadFault := bAxisRtReadFault OR afbAxisRtRead[iAxis].bError;
+END_FOR
+
+// ----- State manager and broadcast -----
+fbStateManager(aClients := GVL_State.aClients);
+
+GVL_State.eMachineState       := fbStateManager.eMachineState;
+GVL_State.uiAbortCode         := fbStateManager.uiAbortCode;
+GVL_State.iAbortClient        := fbStateManager.iAbortClient;
+GVL_State.eAbortFrom          := fbStateManager.eAbortFrom;
+GVL_State.bAbortUnacked       := fbStateManager.bAbortUnacked;
+GVL_State.iAbortTimeoutClient := fbStateManager.iAbortTimeoutClient;
+GVL_State.iNotDoneClient      := fbStateManager.iNotDoneClient;
+
+// ----- HMI client: requests only, always done -----
+fbHmiStateReq(
+    itfClient   := GVL_State.aClients[GVL_State.CLIENT_HMI],
+    bOn         := GVL_Hmi.bOnCmd,
+    bOff        := GVL_Hmi.bOffCmd,
+    bStart      := GVL_Hmi.bStartCmd,
+    bStop       := GVL_Hmi.bStopCmd,
+    bHold       := GVL_Hmi.bHoldCmd,
+    bAbort      := GVL_Hmi.bAbortCmd,
+    uiAbortCode := HMI_ABORT_CODE,
+    bReset      := GVL_Hmi.bResetCmd,
+    eStateEcho  := GVL_State.eMachineState,
+    bDone       := TRUE);
+
+// ----- Drive hardware station -----
+fbDriveSupply(
+    itfClient        := GVL_State.aClients[GVL_State.CLIENT_DRIVE_HW],
+    eMachineState    := GVL_State.eMachineState,
+    wSupplyStatus    := GVL_IO.wDI_SupplyStatus,
+    wSupplyCtrl      := GVL_IO.wDO_SupplyCtrl,
+    awDriveStatus    := GVL_IO.awDI_DriveStatus,
+    awDriveDcBusCtrl := GVL_IO.awDO_DriveDcBusCtrl);
+
+// ----- Servo station -----
+fbServoAxes(
+    itfClient     := GVL_State.aClients[GVL_State.CLIENT_SERVO_AXES],
+    eMachineState := GVL_State.eMachineState,
+    asAxisName    := GVL_Axes.asAxisName,
+    astStatus     := GVL_Axes.astStatus);
+fbServoMotion(
+    itfClient     := GVL_State.aClients[GVL_State.CLIENT_SERVO_MOTION],
+    eMachineState := GVL_State.eMachineState,
+    asAxisName    := GVL_Axes.asAxisName,
+    lrSpeedCmd    := GVL_Hmi.lrSpeedCmd,
+    lrAx1Offset   := GVL_Hmi.lrSlaveOffset,
+    lrAx2Offset   := MODULO - GVL_Hmi.lrSlaveOffset,
+    astStatus     := GVL_Axes.astStatus);
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="FB_AxisCmdState" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="bActive">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">a command is being tracked for this axis</xhtml>
+              </documentation>
+            </variable>
+            <variable name="sObjName">
+              <type>
+                <string length="15" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">axis name</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ulCmdID">
+              <type>
+                <ULINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">CmdID returned when the command was issued</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAccepted">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">the ML_ call returned TRUE (command added to the axis)</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="bDone">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">command state DONE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bFailed">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">rejected, aborted by another command, or state query error</xhtml>
+              </documentation>
+            </variable>
+            <variable name="sState">
+              <type>
+                <string length="50" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: command state as reported</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="_stQuery">
+              <type>
+                <derived name="ML_GetCmdStateData" />
+              </type>
+            </variable>
+            <variable name="_bQueryOk">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bDone">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bFailed">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="CMD_DONE">
+              <type>
+                <string length="50" />
+              </type>
+              <initialValue>
+                <simpleValue value="'DONE'" />
+              </initialValue>
+            </variable>
+            <variable name="CMD_ABORTED">
+              <type>
+                <string length="50" />
+              </type>
+              <initialValue>
+                <simpleValue value="'ABORTED'" />
+              </initialValue>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_AxisCmdState
+VAR_INPUT
+    bActive     : BOOL;         // a command is being tracked for this axis
+    sObjName    : STRING(15);   // axis name
+    ulCmdID     : ULINT;        // CmdID returned when the command was issued
+    bAccepted   : BOOL;         // the ML_ call returned TRUE (command added to the axis)
+END_VAR
+VAR_OUTPUT
+    bDone       : BOOL;         // command state DONE
+    bFailed     : BOOL;         // rejected, aborted by another command, or state query error
+    sState      : STRING(50);   // diag: command state as reported
+END_VAR
+VAR
+    _stQuery    : ML_GetCmdStateData;
+    _bQueryOk   : BOOL;
+    _bDone      : BOOL;
+    _bFailed    : BOOL;
+END_VAR
+VAR CONSTANT
+    CMD_DONE    : STRING(50) := 'DONE';
+    CMD_ABORTED : STRING(50) := 'ABORTED';
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF bActive AND bAccepted THEN
+    _stQuery.In.ObjName := sObjName;
+    _stQuery.In.CmdID   := ulCmdID;
+    _bQueryOk := ML_GetCmdState(Data := _stQuery);
+    _bDone    := _bQueryOk AND NOT _stQuery.Out.Error AND _stQuery.Out.State = CMD_DONE;
+    _bFailed  := NOT _bQueryOk OR _stQuery.Out.Error OR _stQuery.Out.State = CMD_ABORTED;
+ELSE
+    // Inactive: nothing to report. Active but rejected: failed straight away.
+    _stQuery.Out.State := '';
+    _bDone   := FALSE;
+    _bFailed := bActive AND NOT bAccepted;
+END_IF
+
+// Outputs
+bDone   := _bDone;
+bFailed := _bFailed;
+sState  := _stQuery.Out.State;
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="FB_AxisRtMap" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="bEnable">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">open the node, read the map and keep stConfig valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bReadFault">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">a reader failed: close, then reopen and reread the map after RETRY_DELAY</xhtml>
+              </documentation>
+            </variable>
+            <variable name="asAxisName">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <string length="15" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ctrlX MOTION axis names, indexed like GVL_Axes</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="bReady">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">stConfig is valid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bError">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">faulted, retrying every RETRY_DELAY</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAllAxesFound">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: every axis had every field in the map</xhtml>
+              </documentation>
+            </variable>
+            <variable name="uiErrorStep">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: first failure: 1 open, 2 get map, 3 a reader failed (0 = none)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="eResult">
+              <type>
+                <derived name="DL_RESULT" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: Data Layer result of the first failure</xhtml>
+              </documentation>
+            </variable>
+            <variable name="udiVarCount">
+              <type>
+                <UDINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: entries in the map</xhtml>
+              </documentation>
+            </variable>
+            <variable name="udiRevision">
+              <type>
+                <UDINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: map revision</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="fbMem">
+              <type>
+                <derived name="DL_MemUser" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">shared with the FB_AxisRtRead instances</xhtml>
+              </documentation>
+            </variable>
+            <variable name="stConfig">
+              <type>
+                <derived name="ST_AxisRtConfig" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">read configuration for FB_AxisRtRead</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+            <variable name="_uiStep">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="_uiLastStep">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="_bOpen">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">OpenMemory was called: CloseMemory is due</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_eOpen">
+              <type>
+                <derived name="DL_RESULT" />
+              </type>
+              <initialValue>
+                <simpleValue value="DL_RESULT.DL_OK" />
+              </initialValue>
+            </variable>
+            <variable name="_eGetMap">
+              <type>
+                <derived name="DL_RESULT" />
+              </type>
+              <initialValue>
+                <simpleValue value="DL_RESULT.DL_OK" />
+              </initialValue>
+            </variable>
+            <variable name="_uiErrorStep">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="_eResult">
+              <type>
+                <derived name="DL_RESULT" />
+              </type>
+              <initialValue>
+                <simpleValue value="DL_RESULT.DL_OK" />
+              </initialValue>
+            </variable>
+            <variable name="_stConfig">
+              <type>
+                <derived name="ST_AxisRtConfig" />
+              </type>
+            </variable>
+            <variable name="_stCleared">
+              <type>
+                <derived name="ST_AxisRtConfig" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">never written: all FALSE / 0</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_bAllAxesFound">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_fbMapNode">
+              <type>
+                <derived name="DL_NODEVALUE" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Map parsing</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_fbMemMap">
+              <type>
+                <derived name="comm_datalayer_MemoryMap" />
+              </type>
+            </variable>
+            <variable name="_fbVar">
+              <type>
+                <derived name="comm_datalayer_Variable" />
+              </type>
+            </variable>
+            <variable name="_udiVarCount">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="_udiVar">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="_sName">
+              <type>
+                <string length="255" />
+              </type>
+            </variable>
+            <variable name="_sAxis">
+              <type>
+                <string length="255" />
+              </type>
+            </variable>
+            <variable name="_sField">
+              <type>
+                <string length="255" />
+              </type>
+            </variable>
+            <variable name="_iSep">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="_udiBitOffset">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="_iAxis">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="_iField">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="_fbRetry">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="STEP_IDLE">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">node closed, config invalid</xhtml>
+              </documentation>
+            </variable>
+            <variable name="STEP_OPEN">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">OpenMemory issued on entry</xhtml>
+              </documentation>
+            </variable>
+            <variable name="STEP_GET_MAP">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="2" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">map read and parsed on entry</xhtml>
+              </documentation>
+            </variable>
+            <variable name="STEP_READY">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="3" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">config valid, readers read</xhtml>
+              </documentation>
+            </variable>
+            <variable name="STEP_FAULT">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="4" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">node closed, waiting to retry</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ERROR_NONE">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="ERROR_OPEN">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1" />
+              </initialValue>
+            </variable>
+            <variable name="ERROR_GET_MAP">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="2" />
+              </initialValue>
+            </variable>
+            <variable name="ERROR_READ">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="3" />
+              </initialValue>
+            </variable>
+            <variable name="RETRY_DELAY">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#1S" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">time in Fault before the node is reopened</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_AxisRtMap
+VAR_INPUT
+    bEnable         : BOOL;     // open the node, read the map and keep stConfig valid
+    bReadFault      : BOOL;     // a reader failed: close, then reopen and reread the map after RETRY_DELAY
+    asAxisName      : ARRAY[0..GVL_Axes.LAST_AXIS] OF STRING(15);    // ctrlX MOTION axis names, indexed like GVL_Axes
+END_VAR
+VAR_OUTPUT
+    bReady          : BOOL;     // stConfig is valid
+    bError          : BOOL;     // faulted, retrying every RETRY_DELAY
+    bAllAxesFound   : BOOL;     // diag: every axis had every field in the map
+    uiErrorStep     : UINT;     // diag: first failure: 1 open, 2 get map, 3 a reader failed (0 = none)
+    eResult         : DL_RESULT;    // diag: Data Layer result of the first failure
+    udiVarCount     : UDINT;    // diag: entries in the map
+    udiRevision     : UDINT;    // diag: map revision
+END_VAR
+VAR_IN_OUT
+    fbMem           : DL_MemUser;       // shared with the FB_AxisRtRead instances
+    stConfig        : ST_AxisRtConfig;  // read configuration for FB_AxisRtRead
+END_VAR
+VAR
+    _uiStep         : UINT;
+    _uiLastStep     : UINT;
+    _bOpen          : BOOL;             // OpenMemory was called: CloseMemory is due
+    _eOpen          : DL_RESULT := DL_RESULT.DL_OK;
+    _eGetMap        : DL_RESULT := DL_RESULT.DL_OK;
+    _uiErrorStep    : UINT;
+    _eResult        : DL_RESULT := DL_RESULT.DL_OK;
+    _stConfig       : ST_AxisRtConfig;
+    _stCleared      : ST_AxisRtConfig;  // never written: all FALSE / 0
+    _bAllAxesFound  : BOOL;
+
+    // Map parsing
+    _fbMapNode      : DL_NODEVALUE;
+    _fbMemMap       : comm_datalayer_MemoryMap;
+    _fbVar          : comm_datalayer_Variable;
+    _udiVarCount    : UDINT;
+    _udiVar         : UDINT;
+    _sName          : STRING(255);
+    _sAxis          : STRING(255);
+    _sField         : STRING(255);
+    _iSep           : INT;
+    _udiBitOffset   : UDINT;
+    _iAxis          : INT;
+    _iField         : INT;
+
+    _fbRetry        : TON;
+END_VAR
+VAR CONSTANT
+    STEP_IDLE       : UINT := 0;    // node closed, config invalid
+    STEP_OPEN       : UINT := 1;    // OpenMemory issued on entry
+    STEP_GET_MAP    : UINT := 2;    // map read and parsed on entry
+    STEP_READY      : UINT := 3;    // config valid, readers read
+    STEP_FAULT      : UINT := 4;    // node closed, waiting to retry
+    ERROR_NONE      : UINT := 0;
+    ERROR_OPEN      : UINT := 1;
+    ERROR_GET_MAP   : UINT := 2;
+    ERROR_READ      : UINT := 3;
+    RETRY_DELAY     : TIME := T#1S; // time in Fault before the node is reopened
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// ===== 1. Jumps =====
+IF _uiStep = STEP_OPEN AND _eOpen &lt;&gt; DL_RESULT.DL_OK THEN
+    IF _uiErrorStep = ERROR_NONE THEN
+        _uiErrorStep := ERROR_OPEN;
+        _eResult     := _eOpen;
+    END_IF
+    _uiStep := STEP_FAULT;
+ELSIF _uiStep = STEP_GET_MAP AND _eGetMap &lt;&gt; DL_RESULT.DL_OK THEN
+    IF _uiErrorStep = ERROR_NONE THEN
+        _uiErrorStep := ERROR_GET_MAP;
+        _eResult     := _eGetMap;
+    END_IF
+    _uiStep := STEP_FAULT;
+ELSIF _uiStep = STEP_READY AND bReadFault THEN
+    IF _uiErrorStep = ERROR_NONE THEN
+        _uiErrorStep := ERROR_READ;
+    END_IF
+    _uiStep := STEP_FAULT;
+END_IF
+
+// ===== 2. Transitions =====
+CASE _uiStep OF
+    STEP_IDLE:
+        IF bEnable THEN
+            _uiStep := STEP_OPEN;
+        END_IF
+
+    STEP_OPEN:
+        // A failed open has already jumped to Fault
+        IF NOT bEnable THEN
+            _uiStep := STEP_IDLE;
+        ELSE
+            _uiStep := STEP_GET_MAP;
+        END_IF
+
+    STEP_GET_MAP:
+        // A failed map read has already jumped to Fault
+        IF NOT bEnable THEN
+            _uiStep := STEP_IDLE;
+        ELSE
+            _uiStep := STEP_READY;
+        END_IF
+
+    STEP_READY:
+        IF NOT bEnable THEN
+            _uiStep := STEP_IDLE;
+        END_IF
+
+    STEP_FAULT:
+        IF NOT bEnable THEN
+            _uiStep := STEP_IDLE;
+        ELSIF _fbRetry.Q THEN
+            _uiStep := STEP_OPEN;
+        END_IF
+
+ELSE
+    _uiStep := STEP_FAULT;
+END_CASE
+
+// ===== 3. On change =====
+IF _uiStep &lt;&gt; _uiLastStep THEN
+    // Common: the config is only valid in Ready
+    _stConfig.bValid := _uiStep = STEP_READY;
+
+    CASE _uiStep OF
+        STEP_IDLE:
+            IF _bOpen THEN
+                fbMem.CloseMemory();
+                _bOpen := FALSE;
+            END_IF
+            _stConfig    := _stCleared;
+            _uiErrorStep := ERROR_NONE;
+            _eResult     := DL_RESULT.DL_OK;
+
+        STEP_OPEN:
+            _eOpen := fbMem.OpenMemory(GVL_AxisRtMap.NODE_NAME);
+            _bOpen := TRUE;     // close even after a failed open, as the Rexroth example does
+
+        STEP_GET_MAP:
+            _stConfig := _stCleared;
+            _eGetMap  := fbMem.GetMemoryMap(_fbMapNode);
+            IF _eGetMap = DL_RESULT.DL_OK THEN
+                _fbMemMap.getRootAsMemoryMap(_fbMapNode.GetData(), _fbMapNode.GetSize());
+                _udiVarCount := _fbMemMap.getVariablesLength();
+                _udiVar := 0;
+                // Bounded by the map size: one pass over the entries, in this scan
+                WHILE _udiVar &lt; _udiVarCount DO
+                    _fbMemMap.getVariables(_udiVar, ADR(_fbVar));
+                    _sName := _fbVar.getName();
+                    _iSep  := FIND(_sName, GVL_AxisRtMap.NAME_SEPARATOR);
+                    IF _iSep &gt; 1 THEN
+                        _sAxis        := LEFT(_sName, _iSep - 1);
+                        _sField       := MID(_sName, LEN(_sName) - _iSep, _iSep + 1);
+                        _udiBitOffset := _fbVar.getBitoffset();
+                        FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+                            IF asAxisName[_iAxis] = _sAxis THEN
+                                FOR _iField := 0 TO GVL_AxisRtMap.LAST_FIELD DO
+                                    IF GVL_AxisRtMap.asFieldName[_iField] = _sField THEN
+                                        _stConfig.astAxis[_iAxis].audiOffset[_iField] := _udiBitOffset / GVL_AxisRtMap.BITS_PER_BYTE;
+                                        _stConfig.astAxis[_iAxis].abFound[_iField]    := _udiBitOffset MOD GVL_AxisRtMap.BITS_PER_BYTE = 0;
+                                    END_IF
+                                END_FOR
+                            END_IF
+                        END_FOR
+                    END_IF
+                    _udiVar := _udiVar + 1;
+                END_WHILE
+                _stConfig.udiRevision := _fbMemMap.getRevision();
+
+                // An axis can be read only if every field was found
+                _bAllAxesFound := TRUE;
+                FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+                    _stConfig.astAxis[_iAxis].bComplete := TRUE;
+                    FOR _iField := 0 TO GVL_AxisRtMap.LAST_FIELD DO
+                        _stConfig.astAxis[_iAxis].bComplete := _stConfig.astAxis[_iAxis].bComplete
+                                                               AND _stConfig.astAxis[_iAxis].abFound[_iField];
+                    END_FOR
+                    _bAllAxesFound := _bAllAxesFound AND _stConfig.astAxis[_iAxis].bComplete;
+                END_FOR
+            END_IF
+
+        STEP_FAULT:
+            IF _bOpen THEN
+                fbMem.CloseMemory();
+                _bOpen := FALSE;
+            END_IF
+            _stConfig := _stCleared;
+    END_CASE
+    _uiLastStep := _uiStep;
+END_IF
+
+// ===== 4. Cyclic =====
+_fbRetry(IN := _uiStep = STEP_FAULT, PT := RETRY_DELAY);
+
+// Outputs
+stConfig      := _stConfig;
+bReady        := _uiStep = STEP_READY;
+bError        := _uiErrorStep &lt;&gt; ERROR_NONE AND _uiStep &lt;&gt; STEP_READY;
+bAllAxesFound := _bAllAxesFound;
+uiErrorStep   := _uiErrorStep;
+eResult       := _eResult;
+udiVarCount   := _udiVarCount;
+udiRevision   := _stConfig.udiRevision;
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="FB_AxisRtRead" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="iAxis">
+              <type>
+                <INT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">axis index into stConfig.astAxis and astStatus (GVL_Axes.AX1 ...)</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="bValid">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">astStatus[iAxis] was read this scan</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bError">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">the read failed although the config is valid: feed to FB_AxisRtMap.bReadFault</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bNotInMap">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">the axis or some of its fields are not in the map (cyclic status enabled? name right?)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="eResult">
+              <type>
+                <derived name="DL_RESULT" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: result of this scan's read</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="fbMem">
+              <type>
+                <derived name="DL_MemUser" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">the DL_MemUser opened by FB_AxisRtMap</xhtml>
+              </documentation>
+            </variable>
+            <variable name="astStatus">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ST_AxisCyclicStatus" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">only astStatus[iAxis] is written</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <inOutVars constant="true">
+            <variable name="stConfig">
+              <type>
+                <derived name="ST_AxisRtConfig" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">from FB_AxisRtMap</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <localVars>
+            <variable name="_bIndexOk">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bValid">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bError">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bNotInMap">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bCopyOk">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_eResult">
+              <type>
+                <derived name="DL_RESULT" />
+              </type>
+              <initialValue>
+                <simpleValue value="DL_RESULT.DL_OK" />
+              </initialValue>
+            </variable>
+            <variable name="_stOfs">
+              <type>
+                <derived name="ST_AxisRtOffsets" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">this axis's offsets</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_pData">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">start of the RT buffer, only valid between Begin/EndAccess</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_udiSize">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="_stStatus">
+              <type>
+                <derived name="ST_AxisCyclicStatus" />
+              </type>
+            </variable>
+            <variable name="_stCleared">
+              <type>
+                <derived name="ST_AxisCyclicStatus" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">never written: all FALSE / 0</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_AxisRtRead
+VAR_INPUT
+    iAxis           : INT;          // axis index into stConfig.astAxis and astStatus (GVL_Axes.AX1 ...)
+END_VAR
+VAR_OUTPUT
+    bValid          : BOOL;         // astStatus[iAxis] was read this scan
+    bError          : BOOL;         // the read failed although the config is valid: feed to FB_AxisRtMap.bReadFault
+    bNotInMap       : BOOL;         // the axis or some of its fields are not in the map (cyclic status enabled? name right?)
+    eResult         : DL_RESULT;    // diag: result of this scan's read
+END_VAR
+VAR_IN_OUT
+    fbMem           : DL_MemUser;   // the DL_MemUser opened by FB_AxisRtMap
+    astStatus       : ARRAY[0..GVL_Axes.LAST_AXIS] OF ST_AxisCyclicStatus;     // only astStatus[iAxis] is written
+END_VAR
+VAR_IN_OUT CONSTANT
+    stConfig        : ST_AxisRtConfig;  // from FB_AxisRtMap
+END_VAR
+VAR
+    _bIndexOk       : BOOL;
+    _bValid         : BOOL;
+    _bError         : BOOL;
+    _bNotInMap      : BOOL;
+    _bCopyOk        : BOOL;
+    _eResult        : DL_RESULT := DL_RESULT.DL_OK;
+    _stOfs          : ST_AxisRtOffsets;     // this axis's offsets
+    _pData          : POINTER TO BYTE;      // start of the RT buffer, only valid between Begin/EndAccess
+    _udiSize        : UDINT;
+    _stStatus       : ST_AxisCyclicStatus;
+    _stCleared      : ST_AxisCyclicStatus;  // never written: all FALSE / 0
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">_bIndexOk  := iAxis &gt;= 0 AND iAxis &lt;= GVL_Axes.LAST_AXIS;
+_bValid    := FALSE;
+_bError    := FALSE;
+_bNotInMap := FALSE;
+_eResult   := DL_RESULT.DL_OK;
+
+IF stConfig.bValid AND _bIndexOk THEN
+    _stOfs := stConfig.astAxis[iAxis];
+    _bNotInMap := NOT _stOfs.bComplete;
+    IF _stOfs.bComplete THEN
+        // BeginAccess locks the buffer against other users, so EndAccess always follows,
+        // with only the copy in between.
+        _eResult := fbMem.BeginAccess(Data =&gt; _pData, Revision := stConfig.udiRevision);
+        IF _eResult = DL_RESULT.DL_OK THEN
+            fbMem.GetSize(SizeBytes =&gt; _udiSize);
+            // Every field is copied; any copy outside the buffer fails the whole read
+            _bCopyOk := TRUE;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_DATA_VALID],              pDst := ADR(_stStatus.DataValid),           udiSize := SIZEOF(_stStatus.DataValid)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_HOMED],                   pDst := ADR(_stStatus.Homed),               udiSize := SIZEOF(_stStatus.Homed)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_STANDSTILL],              pDst := ADR(_stStatus.Standstill),          udiSize := SIZEOF(_stStatus.Standstill)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_POWER_READY],             pDst := ADR(_stStatus.PowerReady),          udiSize := SIZEOF(_stStatus.PowerReady)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_POWER_ON],                pDst := ADR(_stStatus.PowerOn),             udiSize := SIZEOF(_stStatus.PowerOn)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_HAS_ERROR],               pDst := ADR(_stStatus.HasError),            udiSize := SIZEOF(_stStatus.HasError)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_HAS_WARNING],             pDst := ADR(_stStatus.HasWarning),          udiSize := SIZEOF(_stStatus.HasWarning)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_AXIS_FOLLOW_COMMAND],     pDst := ADR(_stStatus.AxisFollowCommand),   udiSize := SIZEOF(_stStatus.AxisFollowCommand)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_POSITION],             pDst := ADR(_stStatus.InPosition),          udiSize := SIZEOF(_stStatus.InPosition)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_VELOCITY],             pDst := ADR(_stStatus.InVelocity),          udiSize := SIZEOF(_stStatus.InVelocity)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_TORQUE],               pDst := ADR(_stStatus.InTorque),            udiSize := SIZEOF(_stStatus.InTorque)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_SYNC_WINDOW],          pDst := ADR(_stStatus.InSyncWindow),        udiSize := SIZEOF(_stStatus.InSyncWindow)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_SYNCHRONIZATION],      pDst := ADR(_stStatus.InSynchronization),   udiSize := SIZEOF(_stStatus.InSynchronization)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_OVERRIDE_IS_ZERO],        pDst := ADR(_stStatus.OverrideIsZero),      udiSize := SIZEOF(_stStatus.OverrideIsZero)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_TORQUE_CTRL_POS_VEL_LIM], pDst := ADR(_stStatus.TorqueCtrlPosVelLim), udiSize := SIZEOF(_stStatus.TorqueCtrlPosVelLim)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_TORQUE_CTRL_NEG_VEL_LIM], pDst := ADR(_stStatus.TorqueCtrlNegVelLim), udiSize := SIZEOF(_stStatus.TorqueCtrlNegVelLim)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_POS],              pDst := ADR(_stStatus.ActualPos),           udiSize := SIZEOF(_stStatus.ActualPos)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_VEL],              pDst := ADR(_stStatus.ActualVel),           udiSize := SIZEOF(_stStatus.ActualVel)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_TRQ],              pDst := ADR(_stStatus.ActualTRQ),           udiSize := SIZEOF(_stStatus.ActualTRQ)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_TRQ_PERCENT],      pDst := ADR(_stStatus.ActualTRQPercent),    udiSize := SIZEOF(_stStatus.ActualTRQPercent)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_DRIVE_STATUS_WORD],       pDst := ADR(_stStatus.DriveStatusWord),     udiSize := SIZEOF(_stStatus.DriveStatusWord)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_DEVICE_ERROR_CODE],       pDst := ADR(_stStatus.DeviceErrorCode),     udiSize := SIZEOF(_stStatus.DeviceErrorCode)) AND _bCopyOk;
+            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_PLC_OPEN_STATE],          pDst := ADR(_stStatus.PlcOpenState),        udiSize := SIZEOF(_stStatus.PlcOpenState)) AND _bCopyOk;
+            IF _bCopyOk THEN
+                _bValid := TRUE;
+            ELSE
+                _eResult := DL_RESULT.DL_SIZE_MISMATCH;     // a field lies outside the buffer
+            END_IF
+        END_IF
+        fbMem.EndAccess();
+        _bError := NOT _bValid;
+    END_IF
+END_IF
+
+// No good read: report the axis as not valid
+IF NOT _bValid THEN
+    _stStatus := _stCleared;
+END_IF
+
+// Outputs
+IF _bIndexOk THEN
+    astStatus[iAxis] := _stStatus;
+END_IF
+bValid    := _bValid;
+bError    := _bError;
+bNotInMap := _bNotInMap;
+eResult   := _eResult;
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="FB_ServoAxisMgr" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="itfClient">
+              <type>
+                <derived name="I_StateClient" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">GVL_State.aClients[GVL_State.CLIENT_SERVO_AXES]</xhtml>
+              </documentation>
+            </variable>
+            <variable name="eMachineState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">machine state to follow (from the caller: the broadcast, or a sub-manager's state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="asAxisName">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <string length="15" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ctrlX MOTION axis names: Ax1, Ax2, VM</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <inOutVars constant="true">
+            <variable name="astStatus">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ST_AxisCyclicStatus" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">cyclic axis status</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <outputVars>
+            <variable name="bAllPowered">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: all axes powered</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAllOff">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: all axes torque-free</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAllAtRest">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: all axes at rest (debounced)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAnyError">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: some axis has an error</xhtml>
+              </documentation>
+            </variable>
+            <variable name="uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">abort code currently requested, 0 = none</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="_eMachineState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+            </variable>
+            <variable name="_eLastMachineState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+            </variable>
+            <variable name="_iAxis">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="_bAllPowered">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bAllOff">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bAllAtRestNow">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">undebounced</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_bAnyError">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_abPowerReady">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">motion reports the axis ready for power up</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_abPowerConfirmed">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">axis reported PowerOn since power was commanded</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_abCmdRejected">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">an ML_ command was not accepted; cleared on entry to Resetting</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_bFaultAbortActive">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bAbort">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="_bDone">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bWantPower">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">machine-level power want (before per-axis conditions)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_abWantPower">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="_abPowerSent">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">last power level commanded per axis</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_astPower">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ML_AxsPowerData" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="_astReset">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ML_AxsResetData" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="_fbRestDebounce">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+            <variable name="_fbStateReq">
+              <type>
+                <derived name="FB_StateRequest" />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="REST_DEBOUNCE">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#100MS" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">all axes must be at rest this long before going torque-free</xhtml>
+              </documentation>
+            </variable>
+            <variable name="SOURCE_NAME">
+              <type>
+                <string length="50" />
+              </type>
+              <initialValue>
+                <simpleValue value="'FB_ServoAxisMgr'" />
+              </initialValue>
+            </variable>
+            <variable name="ABORT_NONE">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="ABORT_AXIS_ERROR">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="200" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">+ axis index</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ABORT_POWER_LOST">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="210" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">+ axis index</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ABORT_AXIS_CMD">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="220" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">+ axis index: power/reset command not accepted</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ABORT_AXIS_DATA">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="230" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">+ axis index: cyclic status not valid</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_ServoAxisMgr
+VAR_INPUT
+    itfClient   : I_StateClient;                        // GVL_State.aClients[GVL_State.CLIENT_SERVO_AXES]
+    eMachineState : E_MachineState;   // machine state to follow (from the caller: the broadcast, or a sub-manager's state)
+    asAxisName  : ARRAY[0..GVL_Axes.LAST_AXIS] OF STRING(15);    // ctrlX MOTION axis names: Ax1, Ax2, VM
+END_VAR
+VAR_IN_OUT CONSTANT
+    astStatus   : ARRAY[0..GVL_Axes.LAST_AXIS] OF ST_AxisCyclicStatus;   // cyclic axis status
+END_VAR
+VAR_OUTPUT
+    bAllPowered : BOOL;     // diag: all axes powered
+    bAllOff     : BOOL;     // diag: all axes torque-free
+    bAllAtRest  : BOOL;     // diag: all axes at rest (debounced)
+    bAnyError   : BOOL;     // diag: some axis has an error
+    uiAbortCode : UINT;     // abort code currently requested, 0 = none
+END_VAR
+VAR
+    _eMachineState      : E_MachineState;
+    _eLastMachineState  : E_MachineState;
+    _iAxis              : INT;
+
+    _bAllPowered        : BOOL;
+    _bAllOff            : BOOL;
+    _bAllAtRestNow      : BOOL;     // undebounced
+    _bAnyError          : BOOL;
+    _abPowerReady       : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;     // motion reports the axis ready for power up
+    _abPowerConfirmed   : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;     // axis reported PowerOn since power was commanded
+    _abCmdRejected      : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;     // an ML_ command was not accepted; cleared on entry to Resetting
+
+    _bFaultAbortActive  : BOOL;
+    _bAbort             : BOOL;
+    _uiAbortCode        : UINT;
+    _bDone              : BOOL;
+
+    _bWantPower         : BOOL;     // machine-level power want (before per-axis conditions)
+    _abWantPower        : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;
+    _abPowerSent        : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;     // last power level commanded per axis
+    _astPower           : ARRAY[0..GVL_Axes.LAST_AXIS] OF ML_AxsPowerData;
+    _astReset           : ARRAY[0..GVL_Axes.LAST_AXIS] OF ML_AxsResetData;
+
+    _fbRestDebounce     : TON;
+    _fbStateReq         : FB_StateRequest;
+END_VAR
+VAR CONSTANT
+    REST_DEBOUNCE       : TIME := T#100MS;          // all axes must be at rest this long before going torque-free
+    SOURCE_NAME         : STRING(50) := 'FB_ServoAxisMgr';
+    ABORT_NONE          : UINT := 0;
+    ABORT_AXIS_ERROR    : UINT := 200;  // + axis index
+    ABORT_POWER_LOST    : UINT := 210;  // + axis index
+    ABORT_AXIS_CMD      : UINT := 220;  // + axis index: power/reset command not accepted
+    ABORT_AXIS_DATA     : UINT := 230;  // + axis index: cyclic status not valid
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">_eMachineState := eMachineState;     // read once per scan
+
+// ===== 1. Read status =====
+_bAllPowered   := TRUE;
+_bAllOff       := TRUE;
+_bAllAtRestNow := TRUE;
+_bAnyError     := FALSE;
+FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+    // Readiness from the motion feedback, not the drive status word: it also works for an axis
+    // switched to a virtual/test axis. The drive word belongs to the drive hardware station.
+    _abPowerReady[_iAxis]      := astStatus[_iAxis].PowerReady;
+    _abPowerConfirmed[_iAxis]  := _abPowerSent[_iAxis]
+                                  AND (_abPowerConfirmed[_iAxis] OR astStatus[_iAxis].PowerOn);
+
+    _bAllPowered   := _bAllPowered AND astStatus[_iAxis].PowerOn;
+    _bAllOff       := _bAllOff AND NOT astStatus[_iAxis].PowerOn;
+    // At rest: standstill, disabled or in error (an axis in error is stopped by its drive)
+    _bAllAtRestNow := _bAllAtRestNow AND (astStatus[_iAxis].Standstill
+                                          OR NOT astStatus[_iAxis].PowerOn
+                                          OR astStatus[_iAxis].HasError);
+    _bAnyError     := _bAnyError OR astStatus[_iAxis].HasError;
+END_FOR
+
+// ===== 2. Faults -&gt; abort request =====
+// Not raised while aborting, aborted or resetting, so a fault can't block its own reset.
+_bFaultAbortActive := _eMachineState &lt;&gt; E_MachineState.Aborting
+                      AND _eMachineState &lt;&gt; E_MachineState.Aborted
+                      AND _eMachineState &lt;&gt; E_MachineState.Resetting;
+
+_uiAbortCode := ABORT_NONE;
+FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+    IF _uiAbortCode = ABORT_NONE THEN
+        IF NOT astStatus[_iAxis].DataValid THEN
+            _uiAbortCode := ABORT_AXIS_DATA + INT_TO_UINT(_iAxis);
+        ELSIF astStatus[_iAxis].HasError THEN
+            _uiAbortCode := ABORT_AXIS_ERROR + INT_TO_UINT(_iAxis);
+        ELSIF _abPowerConfirmed[_iAxis] AND NOT astStatus[_iAxis].PowerOn THEN
+            _uiAbortCode := ABORT_POWER_LOST + INT_TO_UINT(_iAxis);
+        ELSIF _abCmdRejected[_iAxis] THEN
+            _uiAbortCode := ABORT_AXIS_CMD + INT_TO_UINT(_iAxis);
+        END_IF
+    END_IF
+END_FOR
+_bAbort := _bFaultAbortActive AND _uiAbortCode &lt;&gt; ABORT_NONE;
+
+// ===== 3. Done for the current machine state =====
+CASE _eMachineState OF
+    E_MachineState.Off, E_MachineState.Aborted, E_MachineState.Aborting:
+        _bDone := _bAllOff;                         // Aborting: torque-free before the supply goes off
+
+    E_MachineState.TurningOn, E_MachineState.Resetting:
+        _bDone := _bAllPowered AND NOT _bAnyError;
+
+ELSE
+    _bDone := TRUE;                                 // stay powered, nothing else to do
+END_CASE
+
+// ===== 4. On change of machine state: reset on entry to Resetting =====
+IF _eMachineState &lt;&gt; _eLastMachineState THEN
+    IF _eMachineState = E_MachineState.Resetting THEN
+        // Any fault aborts, so Resetting always follows one: reset every axis unconditionally.
+        // Drive 0 (Ax1) hosts the drive supply, so this also clears supply errors.
+        FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+            _abCmdRejected[_iAxis] := FALSE;
+            _astReset[_iAxis].In.AxisName := asAxisName[_iAxis];
+            _astReset[_iAxis].In.Source   := SOURCE_NAME;
+            IF NOT ML_AxsReset(Data := _astReset[_iAxis]) THEN
+                _abCmdRejected[_iAxis] := TRUE;
+            END_IF
+        END_FOR
+    END_IF
+    _eLastMachineState := _eMachineState;
+END_IF
+
+// ===== 5. Command levels: power per axis =====
+// Powered in every state except Off and Aborted; in Aborting only until all axes are at rest
+_bWantPower := _eMachineState &lt;&gt; E_MachineState.Off
+               AND _eMachineState &lt;&gt; E_MachineState.Aborted
+               AND NOT (_eMachineState = E_MachineState.Aborting AND _fbRestDebounce.Q);
+
+FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+    // Enable only once the drive's power section is ready (DC bus up) and the axis has no error
+    _abWantPower[_iAxis] := _bWantPower AND _abPowerReady[_iAxis] AND NOT astStatus[_iAxis].HasError;
+
+    // ML_AxsPower is one-shot: issue it once each time the wanted level changes
+    IF _abWantPower[_iAxis] &lt;&gt; _abPowerSent[_iAxis] THEN
+        _astPower[_iAxis].In.AxisName := asAxisName[_iAxis];
+        _astPower[_iAxis].In.Source   := SOURCE_NAME;
+        _astPower[_iAxis].In.SwitchOn := _abWantPower[_iAxis];
+        IF NOT ML_AxsPower(Data := _astPower[_iAxis]) THEN
+            _abCmdRejected[_iAxis] := TRUE;
+        END_IF
+        _abPowerSent[_iAxis] := _abWantPower[_iAxis];
+    END_IF
+END_FOR
+
+// ===== 6. Outputs, then sub-FBs =====
+bAllPowered := _bAllPowered;
+bAllOff     := _bAllOff;
+bAllAtRest  := _fbRestDebounce.Q;
+bAnyError   := _bAnyError;
+uiAbortCode := _uiAbortCode;
+
+_fbRestDebounce(IN := _bAllAtRestNow, PT := REST_DEBOUNCE);
+_fbStateReq(
+    itfClient   := itfClient,
+    bAbort      := _bAbort,
+    uiAbortCode := _uiAbortCode,
+    eStateEcho  := _eMachineState,
+    bDone       := _bDone);
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="FB_ServoMotionSeq" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="itfClient">
+              <type>
+                <derived name="I_StateClient" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">GVL_State.aClients[GVL_State.CLIENT_SERVO_MOTION]</xhtml>
+              </documentation>
+            </variable>
+            <variable name="eMachineState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">machine state to follow (from the caller: the broadcast, or a sub-manager's state)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="asAxisName">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <string length="15" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ctrlX MOTION axis names: Ax1, Ax2, VM</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lrSpeedCmd">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">VM velocity in Running; limited by the caller; may change at any time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lrAx1Offset">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Ax1 phase offset from the VM (positioning target and gear slave offset)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lrAx2Offset">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Ax2 phase offset from the VM (positioning target and gear slave offset)</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <inOutVars constant="true">
+            <variable name="astStatus">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ST_AxisCyclicStatus" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">cyclic axis status</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <outputVars>
+            <variable name="eSeqState">
+              <type>
+                <derived name="E_ServoSeqState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">current step, for HMI / online view</xhtml>
+              </documentation>
+            </variable>
+            <variable name="uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">abort code currently requested, 0 = none</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="_eMachineState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+            </variable>
+            <variable name="_eSeqState">
+              <type>
+                <derived name="E_ServoSeqState" />
+              </type>
+            </variable>
+            <variable name="_eLastSeqState">
+              <type>
+                <derived name="E_ServoSeqState" />
+              </type>
+            </variable>
+            <variable name="_iAxis">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="_lrSpeedLatched">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">speed of the velocity command currently running</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_abTrack">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Command tracking, one command per axis at a time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_abAccepted">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="_aulCmdID">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <ULINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="_afbCmd">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="FB_AxisCmdState" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="_iFailedAxis">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="_astPosAbs">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ML_AxsPosData" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ML_ command data</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_astGearIn">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ML_AxsGearInPos2Data" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">used for Ax1, Ax2</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_stVmVel">
+              <type>
+                <derived name="ML_AxsVelData" />
+              </type>
+            </variable>
+            <variable name="_astAbort">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ML_AxsAbortData" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="_bFaultAbortActive">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bAbort">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="_bDone">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_fbStateReq">
+              <type>
+                <derived name="FB_StateRequest" />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="NO_AXIS">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="-1" />
+              </initialValue>
+            </variable>
+            <variable name="VM_POSITION">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="0.0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">VM start position</xhtml>
+              </documentation>
+            </variable>
+            <variable name="POS_VEL">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="90.0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">start positioning: velocity (units/s)   -- set for the machine</xhtml>
+              </documentation>
+            </variable>
+            <variable name="POS_ACC">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="360.0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">start positioning: acceleration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="POS_DEC">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="360.0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">start positioning and ungearing: deceleration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="VM_ACC">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="360.0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">VM ramp up</xhtml>
+              </documentation>
+            </variable>
+            <variable name="VM_DEC">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="360.0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">VM normal ramp down (hold, stop)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ABORT_DEC">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="1440.0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">abort deceleration, separate from VM_DEC</xhtml>
+              </documentation>
+            </variable>
+            <variable name="NO_JERK_LIMIT">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="0.0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">jerk 0 on both = no jerk limit (trapezoid)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="SPEED_DEADBAND">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="0.01" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">speed command change that re-issues the VM velocity</xhtml>
+              </documentation>
+            </variable>
+            <variable name="GEAR_RATIO">
+              <type>
+                <DINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">1:1</xhtml>
+              </documentation>
+            </variable>
+            <variable name="MASTER_OFFSET">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="0.0" />
+              </initialValue>
+            </variable>
+            <variable name="MASTER_SYNC_POS">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="0.0" />
+              </initialValue>
+            </variable>
+            <variable name="MASTER_START_DIST">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="0.0" />
+              </initialValue>
+            </variable>
+            <variable name="FINE_ADJUST">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="0.0" />
+              </initialValue>
+            </variable>
+            <variable name="SOURCE_NAME">
+              <type>
+                <string length="50" />
+              </type>
+              <initialValue>
+                <simpleValue value="'FB_ServoMotionSeq'" />
+              </initialValue>
+            </variable>
+            <variable name="ABORT_NONE">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="ABORT_MOTION_CMD">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="300" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">+ axis index: motion command rejected, aborted or failed</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ABORT_SEQ_INVALID">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="399" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">unknown sequence state</xhtml>
+              </documentation>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_ServoMotionSeq
+VAR_INPUT
+    itfClient   : I_StateClient;                                // GVL_State.aClients[GVL_State.CLIENT_SERVO_MOTION]
+    eMachineState : E_MachineState;   // machine state to follow (from the caller: the broadcast, or a sub-manager's state)
+    asAxisName  : ARRAY[0..GVL_Axes.LAST_AXIS] OF STRING(15);   // ctrlX MOTION axis names: Ax1, Ax2, VM
+    lrSpeedCmd  : LREAL;    // VM velocity in Running; limited by the caller; may change at any time
+    lrAx1Offset : LREAL;    // Ax1 phase offset from the VM (positioning target and gear slave offset)
+    lrAx2Offset : LREAL;    // Ax2 phase offset from the VM (positioning target and gear slave offset)
+END_VAR
+VAR_IN_OUT CONSTANT
+    astStatus   : ARRAY[0..GVL_Axes.LAST_AXIS] OF ST_AxisCyclicStatus;   // cyclic axis status
+END_VAR
+VAR_OUTPUT
+    eSeqState   : E_ServoSeqState;  // current step, for HMI / online view
+    uiAbortCode : UINT;             // abort code currently requested, 0 = none
+END_VAR
+VAR
+    _eMachineState  : E_MachineState;
+    _eSeqState      : E_ServoSeqState;
+    _eLastSeqState  : E_ServoSeqState;
+    _iAxis          : INT;
+    _lrSpeedLatched : LREAL;        // speed of the velocity command currently running
+
+    // Command tracking, one command per axis at a time
+    _abTrack        : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;
+    _abAccepted     : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;
+    _aulCmdID       : ARRAY[0..GVL_Axes.LAST_AXIS] OF ULINT;
+    _afbCmd         : ARRAY[0..GVL_Axes.LAST_AXIS] OF FB_AxisCmdState;
+    _iFailedAxis    : INT;
+
+    // ML_ command data
+    _astPosAbs      : ARRAY[0..GVL_Axes.LAST_AXIS] OF ML_AxsPosData;
+    _astGearIn      : ARRAY[0..GVL_Axes.LAST_AXIS] OF ML_AxsGearInPos2Data;    // used for Ax1, Ax2
+    _stVmVel        : ML_AxsVelData;
+    _astAbort       : ARRAY[0..GVL_Axes.LAST_AXIS] OF ML_AxsAbortData;
+
+    _bFaultAbortActive : BOOL;
+    _bAbort         : BOOL;
+    _uiAbortCode    : UINT;
+    _bDone          : BOOL;
+    _fbStateReq     : FB_StateRequest;
+END_VAR
+VAR CONSTANT
+    NO_AXIS         : INT := -1;
+    VM_POSITION     : LREAL := 0.0;     // VM start position
+    POS_VEL         : LREAL := 90.0;    // start positioning: velocity (units/s)   -- set for the machine
+    POS_ACC         : LREAL := 360.0;   // start positioning: acceleration
+    POS_DEC         : LREAL := 360.0;   // start positioning and ungearing: deceleration
+    VM_ACC          : LREAL := 360.0;   // VM ramp up
+    VM_DEC          : LREAL := 360.0;   // VM normal ramp down (hold, stop)
+    ABORT_DEC       : LREAL := 1440.0;  // abort deceleration, separate from VM_DEC
+    NO_JERK_LIMIT   : LREAL := 0.0;     // jerk 0 on both = no jerk limit (trapezoid)
+    SPEED_DEADBAND  : LREAL := 0.01;    // speed command change that re-issues the VM velocity
+    GEAR_RATIO      : DINT := 1;        // 1:1
+    MASTER_OFFSET   : LREAL := 0.0;
+    MASTER_SYNC_POS : LREAL := 0.0;
+    MASTER_START_DIST : LREAL := 0.0;
+    FINE_ADJUST     : LREAL := 0.0;
+    SOURCE_NAME     : STRING(50) := 'FB_ServoMotionSeq';
+    ABORT_NONE      : UINT := 0;
+    ABORT_MOTION_CMD: UINT := 300;      // + axis index: motion command rejected, aborted or failed
+    ABORT_SEQ_INVALID : UINT := 399;    // unknown sequence state
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">_eMachineState := eMachineState;     // read once per scan
+
+// ===== 1. Jumps: abort first, then stop =====
+IF _eMachineState = E_MachineState.Aborting THEN
+    // From any active step: stop the VM first (slaves follow while geared)
+    IF _eSeqState &lt;&gt; E_ServoSeqState.AbortVm
+       AND _eSeqState &lt;&gt; E_ServoSeqState.AbortSlaves
+       AND _eSeqState &lt;&gt; E_ServoSeqState.Idle THEN
+        _eSeqState := E_ServoSeqState.AbortVm;
+    END_IF
+ELSIF _eMachineState = E_MachineState.Stopping THEN
+    // From any active step not already on the stop (or abort) path: halt the VM, then ungear
+    IF _eSeqState &lt;&gt; E_ServoSeqState.Idle
+       AND _eSeqState &lt;&gt; E_ServoSeqState.VmHalting
+       AND _eSeqState &lt;&gt; E_ServoSeqState.Ungearing
+       AND _eSeqState &lt;&gt; E_ServoSeqState.AbortVm
+       AND _eSeqState &lt;&gt; E_ServoSeqState.AbortSlaves THEN
+        _eSeqState := E_ServoSeqState.VmHalting;
+    END_IF
+END_IF
+
+// ===== 2. Transitions only =====
+CASE _eSeqState OF
+    E_ServoSeqState.Idle:
+        IF _eMachineState = E_MachineState.Starting THEN
+            _eSeqState := E_ServoSeqState.Positioning;
+        END_IF
+
+    E_ServoSeqState.Positioning:
+        IF _afbCmd[GVL_Axes.AX1].bDone AND _afbCmd[GVL_Axes.AX2].bDone AND _afbCmd[GVL_Axes.VM].bDone THEN
+            _eSeqState := E_ServoSeqState.GearingIn;
+        END_IF
+
+    E_ServoSeqState.GearingIn:
+        IF astStatus[GVL_Axes.AX1].InSynchronization AND astStatus[GVL_Axes.AX2].InSynchronization THEN
+            _eSeqState := E_ServoSeqState.Synced;
+        END_IF
+
+    E_ServoSeqState.Synced:
+        IF _eMachineState = E_MachineState.Running OR _eMachineState = E_MachineState.UnHolding THEN
+            _eSeqState := E_ServoSeqState.VmRunning;
+        END_IF
+
+    E_ServoSeqState.VmRunning:
+        IF _eMachineState = E_MachineState.Holding THEN
+            _eSeqState := E_ServoSeqState.VmHalting;
+        ELSIF ABS(lrSpeedCmd - _lrSpeedLatched) &gt; SPEED_DEADBAND THEN
+            _eSeqState := E_ServoSeqState.VmSpeedChange;
+        END_IF
+
+    E_ServoSeqState.VmSpeedChange:
+        // Back to VmRunning: its entry issues the velocity command with the new speed
+        _eSeqState := E_ServoSeqState.VmRunning;
+
+    E_ServoSeqState.VmHalting:
+        IF _afbCmd[GVL_Axes.VM].bDone THEN
+            IF _eMachineState = E_MachineState.Stopping THEN
+                _eSeqState := E_ServoSeqState.Ungearing;
+            ELSE
+                _eSeqState := E_ServoSeqState.Synced;   // Holding: VM stopped, slaves stay geared
+            END_IF
+        END_IF
+
+    E_ServoSeqState.Ungearing:
+        IF _afbCmd[GVL_Axes.AX1].bDone AND _afbCmd[GVL_Axes.AX2].bDone THEN
+            _eSeqState := E_ServoSeqState.Idle;
+        END_IF
+
+    E_ServoSeqState.AbortVm:
+        // Stopped, or can't be commanded any more (unpowered / in error): move on, never hang
+        IF _afbCmd[GVL_Axes.VM].bDone OR _afbCmd[GVL_Axes.VM].bFailed
+           OR NOT astStatus[GVL_Axes.VM].PowerOn OR astStatus[GVL_Axes.VM].HasError THEN
+            _eSeqState := E_ServoSeqState.AbortSlaves;
+        END_IF
+
+    E_ServoSeqState.AbortSlaves:
+        IF (_afbCmd[GVL_Axes.AX1].bDone OR _afbCmd[GVL_Axes.AX1].bFailed
+            OR NOT astStatus[GVL_Axes.AX1].PowerOn OR astStatus[GVL_Axes.AX1].HasError)
+           AND (_afbCmd[GVL_Axes.AX2].bDone OR _afbCmd[GVL_Axes.AX2].bFailed
+            OR NOT astStatus[GVL_Axes.AX2].PowerOn OR astStatus[GVL_Axes.AX2].HasError) THEN
+            _eSeqState := E_ServoSeqState.Idle;
+        END_IF
+
+ELSE
+    _eSeqState := E_ServoSeqState.AbortVm;
+END_CASE
+
+// ===== 3. On change: common actions, then entry actions (ML_ commands issued here, once) =====
+IF _eSeqState &lt;&gt; _eLastSeqState THEN
+    // Every change: stop tracking the previous step's commands
+    FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+        _abTrack[_iAxis]    := FALSE;
+        _abAccepted[_iAxis] := FALSE;
+    END_FOR
+
+    CASE _eSeqState OF
+        E_ServoSeqState.Positioning:
+            // Absolute moves, shortest way on the modulo axes
+            _astPosAbs[GVL_Axes.AX1].In.Position := lrAx1Offset;
+            _astPosAbs[GVL_Axes.AX2].In.Position := lrAx2Offset;
+            _astPosAbs[GVL_Axes.VM].In.Position  := VM_POSITION;
+            FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+                _astPosAbs[_iAxis].In.AxisName := asAxisName[_iAxis];
+                _astPosAbs[_iAxis].In.Source   := SOURCE_NAME;
+                _astPosAbs[_iAxis].In.Buffered := TRUE;
+                _astPosAbs[_iAxis].In.DynLimits.Velocity     := POS_VEL;
+                _astPosAbs[_iAxis].In.DynLimits.Acceleration := POS_ACC;
+                _astPosAbs[_iAxis].In.DynLimits.Deceleration := POS_DEC;
+                _astPosAbs[_iAxis].In.DynLimits.JerkAcc      := NO_JERK_LIMIT;
+                _astPosAbs[_iAxis].In.DynLimits.JerkDec      := NO_JERK_LIMIT;
+                _abAccepted[_iAxis] := ML_AxsPosAbs(Data := _astPosAbs[_iAxis]);
+                _aulCmdID[_iAxis]   := _astPosAbs[_iAxis].Out.CmdID;
+                _abTrack[_iAxis]    := TRUE;
+            END_FOR
+
+        E_ServoSeqState.GearingIn:
+            // Absolute to the VM set point: slave = VM x 1 + slave offset, synchronised the shortest way
+            _astGearIn[GVL_Axes.AX1].In.Parameters.SlaveOffset := lrAx1Offset;
+            _astGearIn[GVL_Axes.AX2].In.Parameters.SlaveOffset := lrAx2Offset;
+            FOR _iAxis := GVL_Axes.AX1 TO GVL_Axes.AX2 DO
+                _astGearIn[_iAxis].In.AxisName            := asAxisName[_iAxis];
+                _astGearIn[_iAxis].In.Source              := SOURCE_NAME;
+                _astGearIn[_iAxis].In.MasterName          := asAxisName[GVL_Axes.VM];
+                _astGearIn[_iAxis].In.SyncSource          := ML_SyncSource.SYNC_SETPOINT;
+                _astGearIn[_iAxis].In.SyncMode            := ML_SyncMode.SYNC_ABSOLUTE;
+                _astGearIn[_iAxis].In.DynSyncDirection    := ML_DynSyncDirection.SHORTEST_WAY;
+                _astGearIn[_iAxis].In.MasterSyncPosition  := MASTER_SYNC_POS;
+                _astGearIn[_iAxis].In.MasterStartDistance := MASTER_START_DIST;
+                _astGearIn[_iAxis].In.Parameters.MasterOffset     := MASTER_OFFSET;
+                _astGearIn[_iAxis].In.Parameters.RatioNumerator   := GEAR_RATIO;
+                _astGearIn[_iAxis].In.Parameters.RatioDenominator := GEAR_RATIO;
+                _astGearIn[_iAxis].In.Parameters.FineAdjust       := FINE_ADJUST;
+                _astGearIn[_iAxis].In.Buffered            := TRUE;
+                _abAccepted[_iAxis] := ML_AxsGearInPos2(Data := _astGearIn[_iAxis]);
+                _aulCmdID[_iAxis]   := _astGearIn[_iAxis].Out.CmdID;
+                _abTrack[_iAxis]    := TRUE;
+            END_FOR
+
+        E_ServoSeqState.VmRunning:
+            // Unbuffered, so a new speed replaces the running command without stopping the VM
+            _lrSpeedLatched := lrSpeedCmd;
+            _stVmVel.In.AxisName := asAxisName[GVL_Axes.VM];
+            _stVmVel.In.Source   := SOURCE_NAME;
+            _stVmVel.In.Velocity := _lrSpeedLatched;
+            _stVmVel.In.DriveVelMode := FALSE;
+            _stVmVel.In.Buffered := FALSE;
+            _stVmVel.In.DynLimits.Velocity     := ABS(_lrSpeedLatched);
+            _stVmVel.In.DynLimits.Acceleration := VM_ACC;
+            _stVmVel.In.DynLimits.Deceleration := VM_DEC;
+            _stVmVel.In.DynLimits.JerkAcc      := NO_JERK_LIMIT;
+            _stVmVel.In.DynLimits.JerkDec      := NO_JERK_LIMIT;
+            _abAccepted[GVL_Axes.VM] := ML_AxsVelocity(Data := _stVmVel);
+            _aulCmdID[GVL_Axes.VM]   := _stVmVel.Out.CmdID;
+            _abTrack[GVL_Axes.VM]    := TRUE;
+
+        E_ServoSeqState.VmHalting:
+            _astAbort[GVL_Axes.VM].In.AxisName     := asAxisName[GVL_Axes.VM];
+            _astAbort[GVL_Axes.VM].In.Source       := SOURCE_NAME;
+            _astAbort[GVL_Axes.VM].In.Deceleration := VM_DEC;
+            _astAbort[GVL_Axes.VM].In.JerkDec      := NO_JERK_LIMIT;
+            _abAccepted[GVL_Axes.VM] := ML_AxsAbort(Data := _astAbort[GVL_Axes.VM]);
+            _aulCmdID[GVL_Axes.VM]   := _astAbort[GVL_Axes.VM].Out.CmdID;
+            _abTrack[GVL_Axes.VM]    := TRUE;
+
+        E_ServoSeqState.Ungearing:
+            // Slaves are already at zero speed with the VM: cancelling the gearing brings them to standstill
+            FOR _iAxis := GVL_Axes.AX1 TO GVL_Axes.AX2 DO
+                _astAbort[_iAxis].In.AxisName     := asAxisName[_iAxis];
+                _astAbort[_iAxis].In.Source       := SOURCE_NAME;
+                _astAbort[_iAxis].In.Deceleration := POS_DEC;
+                _astAbort[_iAxis].In.JerkDec      := NO_JERK_LIMIT;
+                _abAccepted[_iAxis] := ML_AxsAbort(Data := _astAbort[_iAxis]);
+                _aulCmdID[_iAxis]   := _astAbort[_iAxis].Out.CmdID;
+                _abTrack[_iAxis]    := TRUE;
+            END_FOR
+
+        E_ServoSeqState.AbortVm:
+            // Slaves follow the VM down while still geared
+            _astAbort[GVL_Axes.VM].In.AxisName     := asAxisName[GVL_Axes.VM];
+            _astAbort[GVL_Axes.VM].In.Source       := SOURCE_NAME;
+            _astAbort[GVL_Axes.VM].In.Deceleration := ABORT_DEC;
+            _astAbort[GVL_Axes.VM].In.JerkDec      := NO_JERK_LIMIT;
+            _abAccepted[GVL_Axes.VM] := ML_AxsAbort(Data := _astAbort[GVL_Axes.VM]);
+            _aulCmdID[GVL_Axes.VM]   := _astAbort[GVL_Axes.VM].Out.CmdID;
+            _abTrack[GVL_Axes.VM]    := TRUE;
+
+        E_ServoSeqState.AbortSlaves:
+            FOR _iAxis := GVL_Axes.AX1 TO GVL_Axes.AX2 DO
+                _astAbort[_iAxis].In.AxisName     := asAxisName[_iAxis];
+                _astAbort[_iAxis].In.Source       := SOURCE_NAME;
+                _astAbort[_iAxis].In.Deceleration := ABORT_DEC;
+                _astAbort[_iAxis].In.JerkDec      := NO_JERK_LIMIT;
+                _abAccepted[_iAxis] := ML_AxsAbort(Data := _astAbort[_iAxis]);
+                _aulCmdID[_iAxis]   := _astAbort[_iAxis].Out.CmdID;
+                _abTrack[_iAxis]    := TRUE;
+            END_FOR
+    END_CASE
+
+    _eLastSeqState := _eSeqState;
+END_IF
+
+// ===== 4. Cyclic =====
+// Faults -&gt; abort request. Command failures in the abort steps are expected (axes may be
+// unpowered or in error) and don't count. Not raised while aborting, aborted or resetting.
+_bFaultAbortActive := _eMachineState &lt;&gt; E_MachineState.Aborting
+                      AND _eMachineState &lt;&gt; E_MachineState.Aborted
+                      AND _eMachineState &lt;&gt; E_MachineState.Resetting;
+_iFailedAxis := NO_AXIS;
+IF _eSeqState &lt;&gt; E_ServoSeqState.AbortVm AND _eSeqState &lt;&gt; E_ServoSeqState.AbortSlaves THEN
+    FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+        IF _afbCmd[_iAxis].bFailed AND _iFailedAxis = NO_AXIS THEN
+            _iFailedAxis := _iAxis;
+        END_IF
+    END_FOR
+END_IF
+IF _iFailedAxis &lt;&gt; NO_AXIS THEN
+    _uiAbortCode := ABORT_MOTION_CMD + INT_TO_UINT(_iFailedAxis);
+ELSE
+    _uiAbortCode := ABORT_NONE;
+END_IF
+_bAbort := _bFaultAbortActive AND _uiAbortCode &lt;&gt; ABORT_NONE;
+
+// Done for the current machine state, from the sequence state
+CASE _eMachineState OF
+    E_MachineState.Starting, E_MachineState.Holding:
+        _bDone := _eSeqState = E_ServoSeqState.Synced;
+
+    E_MachineState.UnHolding:
+        _bDone := _eSeqState = E_ServoSeqState.VmRunning AND astStatus[GVL_Axes.VM].InVelocity;
+
+    E_MachineState.Stopping, E_MachineState.Aborting:
+        _bDone := _eSeqState = E_ServoSeqState.Idle;
+
+ELSE
+    _bDone := TRUE;     // no motion work in this machine state
+END_CASE
+
+// Outputs
+eSeqState   := _eSeqState;
+uiAbortCode := _uiAbortCode;
+
+// Sub-FBs: command trackers and the state client, every scan
+FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+    _afbCmd[_iAxis](
+        bActive   := _abTrack[_iAxis],
+        sObjName  := asAxisName[_iAxis],
+        ulCmdID   := _aulCmdID[_iAxis],
+        bAccepted := _abAccepted[_iAxis]);
+END_FOR
+_fbStateReq(
+    itfClient   := itfClient,
+    bAbort      := _bAbort,
+    uiAbortCode := _uiAbortCode,
+    eStateEcho  := _eMachineState,
+    bDone       := _bDone);
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="Fn_RtCopy" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="pData">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">start of the RT buffer (from BeginAccess)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="udiDataSize">
+              <type>
+                <UDINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">buffer size in bytes (from GetSize)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="udiOffset">
+              <type>
+                <UDINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">byte offset of the field in the buffer</xhtml>
+              </documentation>
+            </variable>
+            <variable name="pDst">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">destination, e.g. ADR(stX.ActualPos)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="udiSize">
+              <type>
+                <UDINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">field size in bytes, e.g. SIZEOF(stX.ActualPos)</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="_pSrc">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+            <variable name="_pDst">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+            <variable name="_udiByte">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION Fn_RtCopy : BOOL
+VAR_INPUT
+    pData       : POINTER TO BYTE;  // start of the RT buffer (from BeginAccess)
+    udiDataSize : UDINT;            // buffer size in bytes (from GetSize)
+    udiOffset   : UDINT;            // byte offset of the field in the buffer
+    pDst        : POINTER TO BYTE;  // destination, e.g. ADR(stX.ActualPos)
+    udiSize     : UDINT;            // field size in bytes, e.g. SIZEOF(stX.ActualPos)
+END_VAR
+VAR
+    _pSrc       : POINTER TO BYTE;
+    _pDst       : POINTER TO BYTE;
+    _udiByte    : UDINT;
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">Fn_RtCopy := pData &lt;&gt; 0 AND pDst &lt;&gt; 0 AND udiOffset + udiSize &lt;= udiDataSize;
+IF Fn_RtCopy THEN
+    _pSrc := pData + udiOffset;
+    _pDst := pDst;
+    FOR _udiByte := 1 TO udiSize DO
+        _pDst^ := _pSrc^;
+        _pSrc := _pSrc + 1;
+        _pDst := _pDst + 1;
+    END_FOR
+END_IF
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="FB_StateManager" pouType="functionBlock">
+        <interface>
+          <inOutVars>
+            <variable name="aClients">
+              <type>
+                <derived name="ARRAY[*] OF FB_StateClient" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">GVL_State.aClients; lower bound must be &gt;= 1</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <outputVars>
+            <variable name="eMachineState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">the machine state</xhtml>
+              </documentation>
+            </variable>
+            <variable name="uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">first abort cause, 0 = none</xhtml>
+              </documentation>
+            </variable>
+            <variable name="iAbortClient">
+              <type>
+                <DINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">client that caused the abort, 0 = none / manager</xhtml>
+              </documentation>
+            </variable>
+            <variable name="eAbortFrom">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">state the machine aborted from</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAbortUnacked">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">timeout abort: iAbortClient never acknowledged the state</xhtml>
+              </documentation>
+            </variable>
+            <variable name="iAbortTimeoutClient">
+              <type>
+                <DINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">client that did not finish Aborting in time</xhtml>
+              </documentation>
+            </variable>
+            <variable name="iNotDoneClient">
+              <type>
+                <DINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">live: first client not done with the current state</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="_eState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+            </variable>
+            <variable name="_eLastState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+            </variable>
+            <variable name="_uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Abort record: first cause only, cleared on entry to Idle</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_iAbortClient">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="_eAbortFrom">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+            </variable>
+            <variable name="_bAbortUnacked">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_iAbortTimeoutClient">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="_bReqOn">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Combined client data, rebuilt every scan</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_bReqOff">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bReqStart">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bReqStop">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bReqHold">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bReqAbort">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bReqReset">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_bAllDone">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">every enabled client is done with _eDoneState</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_eDoneState">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">state _bAllDone was evaluated for</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_iFirstAbortClient">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="_uiFirstAbortCode">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="_iFirstNotDone">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="_bFirstNotDoneUnacked">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="_iClient">
+              <type>
+                <DINT />
+              </type>
+            </variable>
+            <variable name="_stClient">
+              <type>
+                <derived name="ST_StateClientData" />
+              </type>
+            </variable>
+            <variable name="_tStepTimeout">
+              <type>
+                <TIME />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">timeout of the current state, T#0S = none</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_fbStepTimer">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="NO_CLIENT">
+              <type>
+                <DINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="ABORT_CODE_NONE">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="ABORT_CODE_TIMEOUT">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="16#FFF0" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">a transitional state timed out</xhtml>
+              </documentation>
+            </variable>
+            <variable name="ABORT_CODE_INVALID_STATE">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="16#FFFF" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">unknown state value (e.g. after online change)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="TURNING_ON_TIMEOUT">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#30S" />
+              </initialValue>
+            </variable>
+            <variable name="STARTING_TIMEOUT">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#60S" />
+              </initialValue>
+            </variable>
+            <variable name="STOPPING_TIMEOUT">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#30S" />
+              </initialValue>
+            </variable>
+            <variable name="HOLDING_TIMEOUT">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#30S" />
+              </initialValue>
+            </variable>
+            <variable name="UNHOLDING_TIMEOUT">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#30S" />
+              </initialValue>
+            </variable>
+            <variable name="ABORTING_TIMEOUT">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#10S" />
+              </initialValue>
+            </variable>
+            <variable name="RESETTING_TIMEOUT">
+              <type>
+                <TIME />
+              </type>
+              <initialValue>
+                <simpleValue value="T#30S" />
+              </initialValue>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_StateManager
+VAR_IN_OUT
+    aClients            : ARRAY[*] OF FB_StateClient;  // GVL_State.aClients; lower bound must be &gt;= 1
+END_VAR
+VAR_OUTPUT
+    eMachineState       : E_MachineState;   // the machine state
+    uiAbortCode         : UINT;             // first abort cause, 0 = none
+    iAbortClient        : DINT;             // client that caused the abort, 0 = none / manager
+    eAbortFrom          : E_MachineState;   // state the machine aborted from
+    bAbortUnacked       : BOOL;             // timeout abort: iAbortClient never acknowledged the state
+    iAbortTimeoutClient : DINT;             // client that did not finish Aborting in time
+    iNotDoneClient      : DINT;             // live: first client not done with the current state
+END_VAR
+VAR
+    _eState             : E_MachineState;
+    _eLastState         : E_MachineState;
+
+    // Abort record: first cause only, cleared on entry to Idle
+    _uiAbortCode        : UINT;
+    _iAbortClient       : DINT;
+    _eAbortFrom         : E_MachineState;
+    _bAbortUnacked      : BOOL;
+    _iAbortTimeoutClient: DINT;
+
+    // Combined client data, rebuilt every scan
+    _bReqOn             : BOOL;
+    _bReqOff            : BOOL;
+    _bReqStart          : BOOL;
+    _bReqStop           : BOOL;
+    _bReqHold           : BOOL;
+    _bReqAbort          : BOOL;
+    _bReqReset          : BOOL;
+    _bAllDone           : BOOL;             // every enabled client is done with _eDoneState
+    _eDoneState         : E_MachineState;   // state _bAllDone was evaluated for
+    _iFirstAbortClient  : DINT;
+    _uiFirstAbortCode   : UINT;
+    _iFirstNotDone      : DINT;
+    _bFirstNotDoneUnacked : BOOL;
+    _iClient            : DINT;
+    _stClient           : ST_StateClientData;
+
+    _tStepTimeout       : TIME;             // timeout of the current state, T#0S = none
+    _fbStepTimer        : TON;
+END_VAR
+VAR CONSTANT
+    NO_CLIENT                : DINT := 0;
+    ABORT_CODE_NONE          : UINT := 0;
+    ABORT_CODE_TIMEOUT       : UINT := 16#FFF0;    // a transitional state timed out
+    ABORT_CODE_INVALID_STATE : UINT := 16#FFFF;    // unknown state value (e.g. after online change)
+
+    TURNING_ON_TIMEOUT  : TIME := T#30S;
+    STARTING_TIMEOUT    : TIME := T#60S;
+    STOPPING_TIMEOUT    : TIME := T#30S;
+    HOLDING_TIMEOUT     : TIME := T#30S;
+    UNHOLDING_TIMEOUT   : TIME := T#30S;
+    ABORTING_TIMEOUT    : TIME := T#10S;
+    RESETTING_TIMEOUT   : TIME := T#30S;
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// ===== 0. Read clients =====
+_bReqOn    := FALSE;
+_bReqOff   := FALSE;
+_bReqStart := FALSE;
+_bReqStop  := FALSE;
+_bReqHold  := FALSE;
+_bReqAbort := FALSE;
+_bReqReset := FALSE;
+_bAllDone  := TRUE;
+_eDoneState := _eState;
+_iFirstAbortClient    := NO_CLIENT;
+_uiFirstAbortCode     := ABORT_CODE_NONE;
+_iFirstNotDone        := NO_CLIENT;
+_bFirstNotDoneUnacked := FALSE;
+
+FOR _iClient := LOWER_BOUND(aClients, 1) TO UPPER_BOUND(aClients, 1) DO
+    _stClient := aClients[_iClient].Data;
+    IF _stClient.bEnabled THEN
+        _bReqOn    := _bReqOn    OR _stClient.bOn;
+        _bReqOff   := _bReqOff   OR _stClient.bOff;
+        _bReqStart := _bReqStart OR _stClient.bStart;
+        _bReqStop  := _bReqStop  OR _stClient.bStop;
+        _bReqHold  := _bReqHold  OR _stClient.bHold;
+        _bReqAbort := _bReqAbort OR _stClient.bAbort;
+        _bReqReset := _bReqReset OR _stClient.bReset;
+
+        IF _stClient.bAbort AND _iFirstAbortClient = NO_CLIENT THEN
+            _iFirstAbortClient := _iClient;
+            _uiFirstAbortCode  := _stClient.uiAbortCode;
+        END_IF
+
+        // Done only counts for the current state: a stale done from an old echo is ignored
+        IF NOT (_stClient.eStateEcho = _eState AND _stClient.bDone) THEN
+            _bAllDone := FALSE;
+            IF _iFirstNotDone = NO_CLIENT THEN
+                _iFirstNotDone        := _iClient;
+                _bFirstNotDoneUnacked := _stClient.eStateEcho &lt;&gt; _eState;
+            END_IF
+        END_IF
+    END_IF
+END_FOR
+
+// ===== 1. Jumps: abort, then timeout =====
+IF _eState = E_MachineState.Aborting THEN
+    // Reaching a resettable state matters more than waiting forever
+    IF _fbStepTimer.Q THEN
+        _iAbortTimeoutClient := _iFirstNotDone;
+        _eState := E_MachineState.Aborted;
+    END_IF
+ELSIF _eState &lt;&gt; E_MachineState.Off AND _eState &lt;&gt; E_MachineState.Aborted THEN
+    IF _bReqAbort THEN
+        _uiAbortCode   := _uiFirstAbortCode;
+        _iAbortClient  := _iFirstAbortClient;
+        _bAbortUnacked := FALSE;
+        _eAbortFrom    := _eState;
+        _eState := E_MachineState.Aborting;
+    ELSIF _fbStepTimer.Q THEN
+        _uiAbortCode   := ABORT_CODE_TIMEOUT;
+        _iAbortClient  := _iFirstNotDone;
+        _bAbortUnacked := _bFirstNotDoneUnacked;
+        _eAbortFrom    := _eState;
+        _eState := E_MachineState.Aborting;
+    END_IF
+END_IF
+
+// ===== 2. Transitions only =====
+// _bAllDone was evaluated for _eDoneState (the state at the start of the scan). After a
+// jump it says nothing about the new state, so every AllDone transition also checks that.
+CASE _eState OF
+    E_MachineState.Off:
+        IF _bReqOn AND NOT _bReqOff THEN
+            _eState := E_MachineState.TurningOn;
+        END_IF
+
+    E_MachineState.TurningOn:
+        IF _bAllDone AND _eDoneState = _eState THEN
+            _eState := E_MachineState.Idle;
+        END_IF
+
+    E_MachineState.Idle:
+        IF _bReqOff THEN
+            _eState := E_MachineState.Off;
+        ELSIF _bReqStart AND NOT _bReqStop THEN
+            _eState := E_MachineState.Starting;
+        END_IF
+
+    E_MachineState.Starting:
+        // A stop always wins, whether or not starting has completed
+        IF _bReqStop THEN
+            _eState := E_MachineState.Stopping;
+        ELSIF _bAllDone AND _eDoneState = _eState THEN
+            _eState := E_MachineState.Running;
+        END_IF
+
+    E_MachineState.Running:
+        // Stop wins over hold
+        IF _bReqStop THEN
+            _eState := E_MachineState.Stopping;
+        ELSIF _bReqHold THEN
+            _eState := E_MachineState.Holding;
+        END_IF
+
+    E_MachineState.Stopping:
+        IF _bAllDone AND _eDoneState = _eState THEN
+            _eState := E_MachineState.Idle;
+        END_IF
+
+    E_MachineState.Holding:
+        IF _bAllDone AND _eDoneState = _eState THEN
+            _eState := E_MachineState.Hold;
+        END_IF
+
+    E_MachineState.Hold:
+        // Resume only when no client requests hold any more
+        IF NOT _bReqHold THEN
+            _eState := E_MachineState.UnHolding;
+        END_IF
+
+    E_MachineState.UnHolding:
+        IF _bAllDone AND _eDoneState = _eState THEN
+            _eState := E_MachineState.Running;
+        END_IF
+
+    E_MachineState.Aborting:
+        IF _bAllDone AND _eDoneState = _eState THEN
+            _eState := E_MachineState.Aborted;
+        END_IF
+
+    E_MachineState.Aborted:
+        // A held abort can't be reset away
+        IF _bReqReset AND NOT _bReqAbort THEN
+            _eState := E_MachineState.Resetting;
+        END_IF
+
+    E_MachineState.Resetting:
+        IF _bAllDone AND _eDoneState = _eState THEN
+            _eState := E_MachineState.Idle;
+        END_IF
+
+ELSE
+    _uiAbortCode   := ABORT_CODE_INVALID_STATE;
+    _iAbortClient  := NO_CLIENT;
+    _bAbortUnacked := FALSE;
+    _eAbortFrom    := _eState;
+    _eState := E_MachineState.Aborting;
+END_CASE
+
+// ===== 3. On change: common actions, then entry actions =====
+IF _eState &lt;&gt; _eLastState THEN
+    // Every change: restart the step timer, no timeout unless the new state sets one
+    _fbStepTimer(IN := FALSE);
+    _tStepTimeout := T#0S;
+
+    CASE _eState OF
+        E_MachineState.Idle:
+            // Idle means nothing is wrong: drop the abort record
+            _uiAbortCode         := ABORT_CODE_NONE;
+            _iAbortClient        := NO_CLIENT;
+            _eAbortFrom          := E_MachineState.Off;
+            _bAbortUnacked       := FALSE;
+            _iAbortTimeoutClient := NO_CLIENT;
+
+        E_MachineState.TurningOn:
+            _tStepTimeout := TURNING_ON_TIMEOUT;
+
+        E_MachineState.Starting:
+            _tStepTimeout := STARTING_TIMEOUT;
+
+        E_MachineState.Stopping:
+            _tStepTimeout := STOPPING_TIMEOUT;
+
+        E_MachineState.Holding:
+            _tStepTimeout := HOLDING_TIMEOUT;
+
+        E_MachineState.UnHolding:
+            _tStepTimeout := UNHOLDING_TIMEOUT;
+
+        E_MachineState.Aborting:
+            _tStepTimeout := ABORTING_TIMEOUT;
+
+        E_MachineState.Resetting:
+            _tStepTimeout := RESETTING_TIMEOUT;
+    END_CASE
+
+    _eLastState := _eState;
+END_IF
+
+// ===== 4. Cyclic: outputs, then sub-FBs =====
+eMachineState       := _eState;
+uiAbortCode         := _uiAbortCode;
+iAbortClient        := _iAbortClient;
+eAbortFrom          := _eAbortFrom;
+bAbortUnacked       := _bAbortUnacked;
+iAbortTimeoutClient := _iAbortTimeoutClient;
+iNotDoneClient      := _iFirstNotDone;
+
+_fbStepTimer(IN := _tStepTimeout &gt; T#0S, PT := _tStepTimeout);
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+      <pou name="FB_StateRequest" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="itfClient">
+              <type>
+                <derived name="I_StateClient" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">attached client, e.g. GVL_State.aClients[GVL_State.CLIENT_DRIVE_HW]</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bEnable">
+              <type>
+                <BOOL />
+              </type>
+              <initialValue>
+                <simpleValue value="TRUE" />
+              </initialValue>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FALSE switches this unit out of the machine state</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bOn">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">request: turn machine on</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bOff">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">request: turn machine off</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bStart">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">request: start production</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bStop">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">request: controlled stop</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bHold">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">request: hold while TRUE</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bAbort">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">request: abort</xhtml>
+              </documentation>
+            </variable>
+            <variable name="uiAbortCode">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">reason for bAbort</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bReset">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">request: reset after abort</xhtml>
+              </documentation>
+            </variable>
+            <variable name="eStateEcho">
+              <type>
+                <derived name="E_MachineState" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">machine state the unit is acting on</xhtml>
+              </documentation>
+            </variable>
+            <variable name="bDone">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">unit has finished eStateEcho</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="bAttached">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">a client is attached</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="_bAttached">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_StateRequest
+VAR_INPUT
+    itfClient   : I_StateClient;    // attached client, e.g. GVL_State.aClients[GVL_State.CLIENT_DRIVE_HW]
+    bEnable     : BOOL := TRUE;     // FALSE switches this unit out of the machine state
+    bOn         : BOOL;             // request: turn machine on
+    bOff        : BOOL;             // request: turn machine off
+    bStart      : BOOL;             // request: start production
+    bStop       : BOOL;             // request: controlled stop
+    bHold       : BOOL;             // request: hold while TRUE
+    bAbort      : BOOL;             // request: abort
+    uiAbortCode : UINT;             // reason for bAbort
+    bReset      : BOOL;             // request: reset after abort
+    eStateEcho  : E_MachineState;   // machine state the unit is acting on
+    bDone       : BOOL;             // unit has finished eStateEcho
+END_VAR
+VAR_OUTPUT
+    bAttached   : BOOL;             // a client is attached
+END_VAR
+VAR
+    _bAttached  : BOOL;
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+          </addData>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">_bAttached := itfClient &lt;&gt; 0;
+
+IF _bAttached THEN
+    itfClient.Request(
+        bOn         := bOn,
+        bOff        := bOff,
+        bStart      := bStart,
+        bStop       := bStop,
+        bHold       := bHold,
+        bAbort      := bAbort,
+        uiAbortCode := uiAbortCode,
+        bReset      := bReset);
+    itfClient.Report(
+        eStateEcho  := eStateEcho,
+        bDone       := bDone,
+        bEnable     := bEnable);
+END_IF
+
+// Outputs
+bAttached := _bAttached;
+</xhtml>
+          </ST>
+        </body>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation">
+      <globalVars name="GVL_Hmi">
+        <variable name="bOnCmd">
+          <type>
+            <BOOL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">machine on</xhtml>
+          </documentation>
+        </variable>
+        <variable name="bOffCmd">
+          <type>
+            <BOOL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">machine off</xhtml>
+          </documentation>
+        </variable>
+        <variable name="bStartCmd">
+          <type>
+            <BOOL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">start production</xhtml>
+          </documentation>
+        </variable>
+        <variable name="bStopCmd">
+          <type>
+            <BOOL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">controlled stop</xhtml>
+          </documentation>
+        </variable>
+        <variable name="bHoldCmd">
+          <type>
+            <BOOL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">hold while TRUE</xhtml>
+          </documentation>
+        </variable>
+        <variable name="bAbortCmd">
+          <type>
+            <BOOL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">operator abort</xhtml>
+          </documentation>
+        </variable>
+        <variable name="bResetCmd">
+          <type>
+            <BOOL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">reset after abort</xhtml>
+          </documentation>
+        </variable>
+        <variable name="lrSpeedCmd">
+          <type>
+            <LREAL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">VM line speed (units/s); limit it here, the unit doesn't clamp</xhtml>
+          </documentation>
+        </variable>
+        <variable name="lrSlaveOffset">
+          <type>
+            <LREAL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">phase offset: Ax1 at +offset, Ax2 at 360 - offset</xhtml>
+          </documentation>
+        </variable>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">// GVL: GVL_Hmi
+// Operator commands from the HMI. All levels: hold TRUE to request.
+{attribute 'qualified_only'}
+VAR_GLOBAL
+    bOnCmd      : BOOL;     // machine on
+    bOffCmd     : BOOL;     // machine off
+    bStartCmd   : BOOL;     // start production
+    bStopCmd    : BOOL;     // controlled stop
+    bHoldCmd    : BOOL;     // hold while TRUE
+    bAbortCmd   : BOOL;     // operator abort
+    bResetCmd   : BOOL;     // reset after abort
+
+    // Servo station
+    lrSpeedCmd      : LREAL;    // VM line speed (units/s); limit it here, the unit doesn't clamp
+    lrSlaveOffset   : LREAL;    // phase offset: Ax1 at +offset, Ax2 at 360 - offset
+END_VAR
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </globalVars>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation">
+      <globalVars name="GVL_IO">
+        <variable name="NUM_DRIVES">
+          <type>
+            <DINT />
+          </type>
+          <initialValue>
+            <simpleValue value="2" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">drives in use on the supply (the spare drive 2 is not counted)</xhtml>
+          </documentation>
+        </variable>
+        <variable name="DRIVE_AX1">
+          <type>
+            <DINT />
+          </type>
+          <initialValue>
+            <simpleValue value="0" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">drive 0: Ax1, also hosts the supply unit</xhtml>
+          </documentation>
+        </variable>
+        <variable name="DRIVE_AX2">
+          <type>
+            <DINT />
+          </type>
+          <initialValue>
+            <simpleValue value="1" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">drive 1: Ax2</xhtml>
+          </documentation>
+        </variable>
+        <variable name="wDI_SupplyStatus">
+          <type>
+            <WORD />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">AT: S-0-2058 (S-0-1720.0.2) supply unit status word</xhtml>
+          </documentation>
+        </variable>
+        <variable name="wDO_SupplyCtrl">
+          <type>
+            <WORD />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">MDT: S-0-2057 (S-0-1720.0.1) supply unit control word</xhtml>
+          </documentation>
+        </variable>
+        <variable name="awDI_DriveStatus">
+          <type>
+            <array>
+              <dimension lower="0" upper="NUM_DRIVES - 1" />
+              <baseType>
+                <WORD />
+              </baseType>
+            </array>
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">AT: drive status word (bits 15/14 readiness, bit 13 fault)</xhtml>
+          </documentation>
+        </variable>
+        <variable name="awDO_DriveDcBusCtrl">
+          <type>
+            <array>
+              <dimension lower="0" upper="NUM_DRIVES - 1" />
+              <baseType>
+                <WORD />
+              </baseType>
+            </array>
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">MDT: S-0-0240 DC bus power control</xhtml>
+          </documentation>
+        </variable>
+        <variable name="wDI_SpareDriveStatus">
+          <type>
+            <WORD />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">AT: drive 2 status word</xhtml>
+          </documentation>
+        </variable>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">// GVL: GVL_IO
+// Hardware signals. Map these in the device tree I/O mapping (EtherCAT SoE cyclic data).
+{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+    NUM_DRIVES              : DINT := 2;    // drives in use on the supply (the spare drive 2 is not counted)
+    DRIVE_AX1               : DINT := 0;    // drive 0: Ax1, also hosts the supply unit
+    DRIVE_AX2               : DINT := 1;    // drive 1: Ax2
+END_VAR
+VAR_GLOBAL
+    // Supply unit (drive-integrated)
+    wDI_SupplyStatus        : WORD;                             // AT: S-0-2058 (S-0-1720.0.2) supply unit status word
+    wDO_SupplyCtrl          : WORD;                             // MDT: S-0-2057 (S-0-1720.0.1) supply unit control word
+
+    // Drives
+    awDI_DriveStatus        : ARRAY[0..NUM_DRIVES - 1] OF WORD;     // AT: drive status word (bits 15/14 readiness, bit 13 fault)
+    awDO_DriveDcBusCtrl     : ARRAY[0..NUM_DRIVES - 1] OF WORD;     // MDT: S-0-0240 DC bus power control
+
+    // Drive 2: spare, not used yet. Not part of supply readiness, torque or fault checks.
+    wDI_SpareDriveStatus    : WORD;                             // AT: drive 2 status word
+
+    // Fault reset: drive 0 hosts the supply, so the servo axes' reset in Resetting also resets the supply
+END_VAR
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </globalVars>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation">
+      <globalVars name="GVL_Axes">
+        <variable name="AX1">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="0" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">real servo, drive 0 (also hosts the drive supply)</xhtml>
+          </documentation>
+        </variable>
+        <variable name="AX2">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="1" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">real servo, drive 1</xhtml>
+          </documentation>
+        </variable>
+        <variable name="VM">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="2" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">virtual master</xhtml>
+          </documentation>
+        </variable>
+        <variable name="LAST_AXIS">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="2" />
+          </initialValue>
+        </variable>
+        <variable name="asAxisName">
+          <type>
+            <array>
+              <dimension lower="0" upper="LAST_AXIS" />
+              <baseType>
+                <string length="15" />
+              </baseType>
+            </array>
+          </type>
+          <initialValue>
+            <simpleValue value="['Ax1', 'Ax2', 'VM']" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">set to the ctrlX MOTION axis names</xhtml>
+          </documentation>
+        </variable>
+        <variable name="astStatus">
+          <type>
+            <array>
+              <dimension lower="0" upper="LAST_AXIS" />
+              <baseType>
+                <derived name="ST_AxisCyclicStatus" />
+              </baseType>
+            </array>
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">RT cyclic status, indexed AX1 / AX2 / VM, written by PRG_Main.afbAxisRtRead</xhtml>
+          </documentation>
+        </variable>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">// GVL: GVL_Axes
+// Servo station axes: names as configured in ctrlX MOTION, and their cyclic status
+// (read from the Data Layer RT node by FB_AxisRtMap / FB_AxisRtRead in PRG_Main).
+{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+    AX1         : INT := 0;     // real servo, drive 0 (also hosts the drive supply)
+    AX2         : INT := 1;     // real servo, drive 1
+    VM          : INT := 2;     // virtual master
+    LAST_AXIS   : INT := 2;
+    asAxisName  : ARRAY[0..LAST_AXIS] OF STRING(15) := ['Ax1', 'Ax2', 'VM'];  // set to the ctrlX MOTION axis names
+END_VAR
+VAR_GLOBAL
+    astStatus   : ARRAY[0..LAST_AXIS] OF ST_AxisCyclicStatus;   // RT cyclic status, indexed AX1 / AX2 / VM, written by PRG_Main.afbAxisRtRead
+END_VAR
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </globalVars>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation">
+      <globalVars name="GVL_AxisRtMap" constant="true">
+        <variable name="NODE_NAME">
+          <type>
+            <string length="255" />
+          </type>
+          <initialValue>
+            <simpleValue value="'motion/realtime/cyclicStatusData'" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">RT node</xhtml>
+          </documentation>
+        </variable>
+        <variable name="NAME_SEPARATOR">
+          <type>
+            <string length="1" />
+          </type>
+          <initialValue>
+            <simpleValue value="'/'" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">map names are '&lt;axis&gt;/&lt;field&gt;'</xhtml>
+          </documentation>
+        </variable>
+        <variable name="BITS_PER_BYTE">
+          <type>
+            <UDINT />
+          </type>
+          <initialValue>
+            <simpleValue value="8" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">map offsets are in bits</xhtml>
+          </documentation>
+        </variable>
+        <variable name="F_ACTUAL_POS">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="0" />
+          </initialValue>
+        </variable>
+        <variable name="F_ACTUAL_VEL">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="1" />
+          </initialValue>
+        </variable>
+        <variable name="F_ACTUAL_TRQ">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="2" />
+          </initialValue>
+        </variable>
+        <variable name="F_ACTUAL_TRQ_PERCENT">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="3" />
+          </initialValue>
+        </variable>
+        <variable name="F_DEVICE_ERROR_CODE">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="4" />
+          </initialValue>
+        </variable>
+        <variable name="F_PLC_OPEN_STATE">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="5" />
+          </initialValue>
+        </variable>
+        <variable name="F_DRIVE_STATUS_WORD">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="6" />
+          </initialValue>
+        </variable>
+        <variable name="F_DATA_VALID">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="7" />
+          </initialValue>
+        </variable>
+        <variable name="F_HOMED">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="8" />
+          </initialValue>
+        </variable>
+        <variable name="F_STANDSTILL">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="9" />
+          </initialValue>
+        </variable>
+        <variable name="F_POWER_READY">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="10" />
+          </initialValue>
+        </variable>
+        <variable name="F_POWER_ON">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="11" />
+          </initialValue>
+        </variable>
+        <variable name="F_HAS_ERROR">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="12" />
+          </initialValue>
+        </variable>
+        <variable name="F_HAS_WARNING">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="13" />
+          </initialValue>
+        </variable>
+        <variable name="F_AXIS_FOLLOW_COMMAND">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="14" />
+          </initialValue>
+        </variable>
+        <variable name="F_IN_POSITION">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="15" />
+          </initialValue>
+        </variable>
+        <variable name="F_IN_VELOCITY">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="16" />
+          </initialValue>
+        </variable>
+        <variable name="F_IN_TORQUE">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="17" />
+          </initialValue>
+        </variable>
+        <variable name="F_IN_SYNCHRONIZATION">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="18" />
+          </initialValue>
+        </variable>
+        <variable name="F_OVERRIDE_IS_ZERO">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="19" />
+          </initialValue>
+        </variable>
+        <variable name="F_TORQUE_CTRL_POS_VEL_LIM">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="20" />
+          </initialValue>
+        </variable>
+        <variable name="F_TORQUE_CTRL_NEG_VEL_LIM">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="21" />
+          </initialValue>
+        </variable>
+        <variable name="F_IN_SYNC_WINDOW">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="22" />
+          </initialValue>
+        </variable>
+        <variable name="LAST_FIELD">
+          <type>
+            <INT />
+          </type>
+          <initialValue>
+            <simpleValue value="22" />
+          </initialValue>
+        </variable>
+        <variable name="asFieldName">
+          <type>
+            <array>
+              <dimension lower="0" upper="LAST_FIELD" />
+              <baseType>
+                <string length="31" />
+              </baseType>
+            </array>
+          </type>
+          <initialValue>
+            <simpleValue value="[         'ActualPos', 'ActualVel', 'ActualTRQ', 'ActualTRQPercent',         'DeviceErrorCode', 'PlcOpenState', 'DriveStatusWord',         'DataValid', 'Homed', 'Standstill', 'PowerReady', 'PowerOn', 'HasError', 'HasWarning',         'AxisFollowCommand', 'InPosition', 'InVelocity', 'InTorque', 'InSynchronization',         'OverrideIsZero', 'TorqueCtrlPosVelLim', 'TorqueCtrlNegVelLim', 'InSyncWindow']" />
+          </initialValue>
+        </variable>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">// GVL: GVL_AxisRtMap
+// Field table for the cyclic axis status RT node. FB_AxisRtMap looks each map entry
+// '&lt;axis&gt;/&lt;field&gt;' up here; the F_* index is where its byte offset is stored in
+// ST_AxisRtOffsets.audiOffset, and FB_AxisRtRead copies by the same index.
+// Keep F_* and asFieldName in step: asFieldName[F_X] is the map name of field X.
+{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+    NODE_NAME           : STRING(255) := 'motion/realtime/cyclicStatusData';   // RT node
+    NAME_SEPARATOR      : STRING(1) := '/';     // map names are '&lt;axis&gt;/&lt;field&gt;'
+    BITS_PER_BYTE       : UDINT := 8;           // map offsets are in bits
+
+    F_ACTUAL_POS            : INT := 0;
+    F_ACTUAL_VEL            : INT := 1;
+    F_ACTUAL_TRQ            : INT := 2;
+    F_ACTUAL_TRQ_PERCENT    : INT := 3;
+    F_DEVICE_ERROR_CODE     : INT := 4;
+    F_PLC_OPEN_STATE        : INT := 5;
+    F_DRIVE_STATUS_WORD     : INT := 6;
+    F_DATA_VALID            : INT := 7;
+    F_HOMED                 : INT := 8;
+    F_STANDSTILL            : INT := 9;
+    F_POWER_READY           : INT := 10;
+    F_POWER_ON              : INT := 11;
+    F_HAS_ERROR             : INT := 12;
+    F_HAS_WARNING           : INT := 13;
+    F_AXIS_FOLLOW_COMMAND   : INT := 14;
+    F_IN_POSITION           : INT := 15;
+    F_IN_VELOCITY           : INT := 16;
+    F_IN_TORQUE             : INT := 17;
+    F_IN_SYNCHRONIZATION    : INT := 18;
+    F_OVERRIDE_IS_ZERO      : INT := 19;
+    F_TORQUE_CTRL_POS_VEL_LIM : INT := 20;
+    F_TORQUE_CTRL_NEG_VEL_LIM : INT := 21;
+    F_IN_SYNC_WINDOW        : INT := 22;
+    LAST_FIELD              : INT := 22;
+
+    asFieldName : ARRAY[0..LAST_FIELD] OF STRING(31) := [
+        'ActualPos', 'ActualVel', 'ActualTRQ', 'ActualTRQPercent',
+        'DeviceErrorCode', 'PlcOpenState', 'DriveStatusWord',
+        'DataValid', 'Homed', 'Standstill', 'PowerReady', 'PowerOn', 'HasError', 'HasWarning',
+        'AxisFollowCommand', 'InPosition', 'InVelocity', 'InTorque', 'InSynchronization',
+        'OverrideIsZero', 'TorqueCtrlPosVelLim', 'TorqueCtrlNegVelLim', 'InSyncWindow'];
+END_VAR
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </globalVars>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation">
+      <globalVars name="GVL_State">
+        <variable name="MAX_CLIENTS">
+          <type>
+            <DINT />
+          </type>
+          <initialValue>
+            <simpleValue value="4" />
+          </initialValue>
+        </variable>
+        <variable name="CLIENT_HMI">
+          <type>
+            <DINT />
+          </type>
+          <initialValue>
+            <simpleValue value="1" />
+          </initialValue>
+        </variable>
+        <variable name="CLIENT_DRIVE_HW">
+          <type>
+            <DINT />
+          </type>
+          <initialValue>
+            <simpleValue value="2" />
+          </initialValue>
+        </variable>
+        <variable name="CLIENT_SERVO_AXES">
+          <type>
+            <DINT />
+          </type>
+          <initialValue>
+            <simpleValue value="3" />
+          </initialValue>
+        </variable>
+        <variable name="CLIENT_SERVO_MOTION">
+          <type>
+            <DINT />
+          </type>
+          <initialValue>
+            <simpleValue value="4" />
+          </initialValue>
+        </variable>
+        <variable name="aClients">
+          <type>
+            <array>
+              <dimension lower="1" upper="MAX_CLIENTS" />
+              <baseType>
+                <derived name="FB_StateClient" />
+              </baseType>
+            </array>
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">index 0 is reserved for "no client"</xhtml>
+          </documentation>
+        </variable>
+        <variable name="eMachineState">
+          <type>
+            <derived name="E_MachineState" />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">the machine state every unit follows</xhtml>
+          </documentation>
+        </variable>
+        <variable name="uiAbortCode">
+          <type>
+            <UINT />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">first abort cause, 0 = none</xhtml>
+          </documentation>
+        </variable>
+        <variable name="iAbortClient">
+          <type>
+            <DINT />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">client that caused the abort, 0 = none / manager</xhtml>
+          </documentation>
+        </variable>
+        <variable name="eAbortFrom">
+          <type>
+            <derived name="E_MachineState" />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">state the machine aborted from</xhtml>
+          </documentation>
+        </variable>
+        <variable name="bAbortUnacked">
+          <type>
+            <BOOL />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">timeout abort: iAbortClient never acknowledged the state</xhtml>
+          </documentation>
+        </variable>
+        <variable name="iAbortTimeoutClient">
+          <type>
+            <DINT />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">client that did not finish Aborting in time, 0 = none</xhtml>
+          </documentation>
+        </variable>
+        <variable name="iNotDoneClient">
+          <type>
+            <DINT />
+          </type>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">live: first client not done with the current state</xhtml>
+          </documentation>
+        </variable>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">// GVL: GVL_State
+// Client array, client indexes and the broadcast machine state.
+// The broadcast values are written only by PRG_Main, from FB_StateManager's outputs.
+{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+    MAX_CLIENTS         : DINT := 4;
+    CLIENT_HMI          : DINT := 1;
+    CLIENT_DRIVE_HW     : DINT := 2;
+    CLIENT_SERVO_AXES   : DINT := 3;
+    CLIENT_SERVO_MOTION : DINT := 4;
+END_VAR
+VAR_GLOBAL
+    aClients            : ARRAY[1..MAX_CLIENTS] OF FB_StateClient;  // index 0 is reserved for "no client"
+
+    // Broadcast (copies of FB_StateManager outputs)
+    eMachineState       : E_MachineState;   // the machine state every unit follows
+    uiAbortCode         : UINT;             // first abort cause, 0 = none
+    iAbortClient        : DINT;             // client that caused the abort, 0 = none / manager
+    eAbortFrom          : E_MachineState;   // state the machine aborted from
+    bAbortUnacked       : BOOL;             // timeout abort: iAbortClient never acknowledged the state
+    iAbortTimeoutClient : DINT;             // client that did not finish Aborting in time, 0 = none
+    iNotDoneClient      : DINT;             // live: first client not done with the current state
+END_VAR
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </globalVars>
+    </data>
+  </addData>
+</project>
