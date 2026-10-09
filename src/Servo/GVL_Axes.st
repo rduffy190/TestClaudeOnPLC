@@ -10,5 +10,5 @@ VAR_GLOBAL CONSTANT
     asAxisName  : ARRAY[0..LAST_AXIS] OF STRING(15) := ['Ax1', 'Ax2', 'VM'];  // set to the ctrlX MOTION axis names
 END_VAR
 VAR_GLOBAL
-    astStatus   : ARRAY[0..LAST_AXIS] OF ST_AxisCyclicStatus;   // RT cyclic status, indexed AX1 / AX2 / VM, written by PRG_Main.afbAxisRtRead
+    astStatus   : ARRAY[0..LAST_AXIS] OF ST_AxisCyclicStatus;   // RT cyclic status, indexed AX1 / AX2 / VM, written by PRG_Main.fbAxisRtRead
 END_VAR

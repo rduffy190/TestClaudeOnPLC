@@ -1,9 +1,9 @@
 // FUNCTION_BLOCK: FB_AxisRtMap
 // Opens the cyclic axis status RT node (motion/realtime/cyclicStatusData) and reads its memory
 // map into stConfig: for every axis in asAxisName, the byte offset of every field in
-// GVL_AxisRtMap, plus the map revision. FB_AxisRtRead instances then read one axis each,
+// GVL_AxisRtMap, plus the map revision. FB_AxisRtRead then reads every axis in one access,
 // using stConfig and the same DL_MemUser.
-// stConfig.bValid is TRUE only in Ready. On a fault (open, map, or a reader reporting
+// stConfig.bValid is TRUE only in Ready. On a fault (open, map, or the reader reporting
 // bReadFault) the node is closed, stConfig is cleared, and after RETRY_DELAY the node is
 // reopened and the map read again. A changed map (axes reconfigured) therefore recovers by
 // itself. uiErrorStep / eResult keep the first cause until bEnable is removed.
@@ -14,20 +14,20 @@
 FUNCTION_BLOCK FB_AxisRtMap
 VAR_INPUT
     bEnable         : BOOL;     // open the node, read the map and keep stConfig valid
-    bReadFault      : BOOL;     // a reader failed: close, then reopen and reread the map after RETRY_DELAY
+    bReadFault      : BOOL;     // the read failed: close, then reopen and reread the map after RETRY_DELAY
     asAxisName      : ARRAY[0..GVL_Axes.LAST_AXIS] OF STRING(15);    // ctrlX MOTION axis names, indexed like GVL_Axes
 END_VAR
 VAR_OUTPUT
     bReady          : BOOL;     // stConfig is valid
     bError          : BOOL;     // faulted, retrying every RETRY_DELAY
     bAllAxesFound   : BOOL;     // diag: every axis had every field in the map
-    uiErrorStep     : UINT;     // diag: first failure: 1 open, 2 get map, 3 a reader failed (0 = none)
+    uiErrorStep     : UINT;     // diag: first failure: 1 open, 2 get map, 3 the read failed (0 = none)
     eResult         : DL_RESULT;    // diag: Data Layer result of the first failure
     udiVarCount     : UDINT;    // diag: entries in the map
     udiRevision     : UDINT;    // diag: map revision
 END_VAR
 VAR_IN_OUT
-    fbMem           : DL_MemUser;       // shared with the FB_AxisRtRead instances
+    fbMem           : DL_MemUser;       // shared with FB_AxisRtRead
     stConfig        : ST_AxisRtConfig;  // read configuration for FB_AxisRtRead
 END_VAR
 VAR
@@ -62,7 +62,7 @@ VAR CONSTANT
     STEP_IDLE       : UINT := 0;    // node closed, config invalid
     STEP_OPEN       : UINT := 1;    // OpenMemory issued on entry
     STEP_GET_MAP    : UINT := 2;    // map read and parsed on entry
-    STEP_READY      : UINT := 3;    // config valid, readers read
+    STEP_READY      : UINT := 3;    // config valid, the reader reads
     STEP_FAULT      : UINT := 4;    // node closed, waiting to retry
     ERROR_NONE      : UINT := 0;
     ERROR_OPEN      : UINT := 1;

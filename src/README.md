@@ -26,8 +26,8 @@ There's no separate fault reset output. On entry to Resetting the servo axis man
 
 **Motion setup:**
 - set `GVL_Axes.asAxisName` to the ctrlX MOTION axis names;
-- enable the cyclic status data for each axis (`motion/axs/<name>/cfg/functions/cyclic-status-data/remanent`). There's no I/O mapping for it. At the top of `PRG_Main`, `FB_AxisRtMap` opens `motion/realtime/cyclicStatusData`, reads its memory map and fills `stAxisRtConfig` with each axis's field offsets and the map revision. Then one `FB_AxisRtRead` per axis copies that axis into `GVL_Axes.astStatus[i]`. Axes are matched by `GVL_Axes.asAxisName` and fields by `GVL_AxisRtMap.asFieldName`;
-- diagnostics: `fbAxisRtMap.bError` / `uiErrorStep` / `eResult` (open, get map, or a reader failed; it retries every 1 s and rereads the map, so a reconfigured map recovers by itself), `fbAxisRtMap.bAllAxesFound`, `afbAxisRtRead[i].bNotInMap` (axis name wrong or cyclic status not enabled; `stAxisRtConfig.astAxis[i].abFound` shows which fields are missing). An axis that isn't read has `DataValid = FALSE`;
+- enable the cyclic status data for each axis (`motion/axs/<name>/cfg/functions/cyclic-status-data/remanent`). There's no I/O mapping for it. At the top of `PRG_Main`, `FB_AxisRtMap` opens `motion/realtime/cyclicStatusData`, reads its memory map and fills `stAxisRtConfig` with each axis's field offsets and the map revision. Then `FB_AxisRtRead` takes one `BeginAccess`/`EndAccess` per scan and copies every axis found in the map into `GVL_Axes.astStatus`. Axes are matched by `GVL_Axes.asAxisName` and fields by `GVL_AxisRtMap.asFieldName`;
+- diagnostics: `fbAxisRtMap.bError` / `uiErrorStep` / `eResult` (open, get map, or the read failed; it retries every 1 s and rereads the map, so a reconfigured map recovers by itself), `fbAxisRtMap.bAllAxesFound`, `fbAxisRtRead.abNotInMap[i]` (axis name wrong or cyclic status not enabled; `stAxisRtConfig.astAxis[i].abFound` shows which fields are missing). An axis that isn't read has `DataValid = FALSE`;
 - set the dynamics constants in `FB_ServoMotionSeq` (`POS_*`, `VM_*`, `ABORT_DEC`), which are placeholders, and `SPEED_DEADBAND`.
 
 ## Status

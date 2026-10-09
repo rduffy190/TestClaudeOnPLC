@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5" creationDateTime="2026-10-09T11:52:33" />
-  <contentHeader name="PlcProject" modificationDateTime="2026-10-09T11:52:33">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5" creationDateTime="2026-10-09T12:36:04" />
+  <contentHeader name="PlcProject" modificationDateTime="2026-10-09T12:36:04">
     <coordinateInfo>
       <fbd>
         <scaling x="1" y="1" />
@@ -280,7 +280,7 @@ END_TYPE
             <InterfaceAsPlainText>
               <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_AxisRtConfig :
 STRUCT
-    bValid      : BOOL;     // node open and map read: readers may read
+    bValid      : BOOL;     // node open and map read: FB_AxisRtRead may read
     udiRevision : UDINT;    // map revision, passed to BeginAccess
     astAxis     : ARRAY[0..GVL_Axes.LAST_AXIS] OF ST_AxisRtOffsets;     // offsets per axis
 END_STRUCT
@@ -1039,7 +1039,7 @@ Fn_DriveFeedback.bFault         := (wStatus AND MASK_FAULT) &lt;&gt; 0;
                 <derived name="DL_MemUser" />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">RT node access, shared by the axis map and readers</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">RT node access, shared by the axis map and reader</xhtml>
               </documentation>
             </variable>
             <variable name="stAxisRtConfig">
@@ -1058,31 +1058,13 @@ Fn_DriveFeedback.bFault         := (wStatus AND MASK_FAULT) &lt;&gt; 0;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">opens motion/realtime/cyclicStatusData, reads its map</xhtml>
               </documentation>
             </variable>
-            <variable name="afbAxisRtRead">
+            <variable name="fbAxisRtRead">
               <type>
-                <array>
-                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
-                  <baseType>
-                    <derived name="FB_AxisRtRead" />
-                  </baseType>
-                </array>
+                <derived name="FB_AxisRtRead" />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">one reader per axis -&gt; GVL_Axes.astStatus</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">reads every axis in one access -&gt; GVL_Axes.astStatus</xhtml>
               </documentation>
-            </variable>
-            <variable name="bAxisRtReadFault">
-              <type>
-                <BOOL />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">some reader failed: remap</xhtml>
-              </documentation>
-            </variable>
-            <variable name="iAxis">
-              <type>
-                <INT />
-              </type>
             </variable>
             <variable name="fbStateManager">
               <type>
@@ -1142,12 +1124,10 @@ Fn_DriveFeedback.bFault         := (wStatus AND MASK_FAULT) &lt;&gt; 0;
               <InterfaceAsPlainText>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">PROGRAM PRG_Main
 VAR
-    fbRtMem         : DL_MemUser;           // RT node access, shared by the axis map and readers
+    fbRtMem         : DL_MemUser;           // RT node access, shared by the axis map and reader
     stAxisRtConfig  : ST_AxisRtConfig;      // RT read configuration from fbAxisRtMap
     fbAxisRtMap     : FB_AxisRtMap;         // opens motion/realtime/cyclicStatusData, reads its map
-    afbAxisRtRead   : ARRAY[0..GVL_Axes.LAST_AXIS] OF FB_AxisRtRead;   // one reader per axis -&gt; GVL_Axes.astStatus
-    bAxisRtReadFault : BOOL;                // some reader failed: remap
-    iAxis           : INT;
+    fbAxisRtRead    : FB_AxisRtRead;        // reads every axis in one access -&gt; GVL_Axes.astStatus
     fbStateManager  : FB_StateManager;
     fbHmiStateReq   : FB_StateRequest;      // HMI is just another client
     fbDriveSupply   : FB_DriveSupplyMgr;
@@ -1166,23 +1146,18 @@ END_VAR
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">// ----- Axis status from the Data Layer RT -----
-// The map FB opens the node and builds the config; each reader then reads one axis.
-// A reader failure (last scan) makes the map FB close, reopen and remap.
+// The map FB opens the node and builds the config; the reader then reads every axis.
+// A read failure (last scan) makes the map FB close, reopen and remap.
 fbAxisRtMap(
     bEnable    := TRUE,
-    bReadFault := bAxisRtReadFault,
+    bReadFault := fbAxisRtRead.bError,
     asAxisName := GVL_Axes.asAxisName,
     fbMem      := fbRtMem,
     stConfig   := stAxisRtConfig);
-bAxisRtReadFault := FALSE;
-FOR iAxis := 0 TO GVL_Axes.LAST_AXIS DO
-    afbAxisRtRead[iAxis](
-        iAxis     := iAxis,
-        fbMem     := fbRtMem,
-        stConfig  := stAxisRtConfig,
-        astStatus := GVL_Axes.astStatus);
-    bAxisRtReadFault := bAxisRtReadFault OR afbAxisRtRead[iAxis].bError;
-END_FOR
+fbAxisRtRead(
+    fbMem     := fbRtMem,
+    stConfig  := stAxisRtConfig,
+    astStatus := GVL_Axes.astStatus);
 
 // ----- State manager and broadcast -----
 fbStateManager(aClients := GVL_State.aClients);
@@ -1407,7 +1382,7 @@ sState  := _stQuery.Out.State;
                 <BOOL />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">a reader failed: close, then reopen and reread the map after RETRY_DELAY</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">the read failed: close, then reopen and reread the map after RETRY_DELAY</xhtml>
               </documentation>
             </variable>
             <variable name="asAxisName">
@@ -1454,7 +1429,7 @@ sState  := _stQuery.Out.State;
                 <UINT />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: first failure: 1 open, 2 get map, 3 a reader failed (0 = none)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: first failure: 1 open, 2 get map, 3 the read failed (0 = none)</xhtml>
               </documentation>
             </variable>
             <variable name="eResult">
@@ -1488,7 +1463,7 @@ sState  := _stQuery.Out.State;
                 <derived name="DL_MemUser" />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">shared with the FB_AxisRtRead instances</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">shared with FB_AxisRtRead</xhtml>
               </documentation>
             </variable>
             <variable name="stConfig">
@@ -1677,7 +1652,7 @@ sState  := _stQuery.Out.State;
                 <simpleValue value="3" />
               </initialValue>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">config valid, readers read</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">config valid, the reader reads</xhtml>
               </documentation>
             </variable>
             <variable name="STEP_FAULT">
@@ -1741,20 +1716,20 @@ sState  := _stQuery.Out.State;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_AxisRtMap
 VAR_INPUT
     bEnable         : BOOL;     // open the node, read the map and keep stConfig valid
-    bReadFault      : BOOL;     // a reader failed: close, then reopen and reread the map after RETRY_DELAY
+    bReadFault      : BOOL;     // the read failed: close, then reopen and reread the map after RETRY_DELAY
     asAxisName      : ARRAY[0..GVL_Axes.LAST_AXIS] OF STRING(15);    // ctrlX MOTION axis names, indexed like GVL_Axes
 END_VAR
 VAR_OUTPUT
     bReady          : BOOL;     // stConfig is valid
     bError          : BOOL;     // faulted, retrying every RETRY_DELAY
     bAllAxesFound   : BOOL;     // diag: every axis had every field in the map
-    uiErrorStep     : UINT;     // diag: first failure: 1 open, 2 get map, 3 a reader failed (0 = none)
+    uiErrorStep     : UINT;     // diag: first failure: 1 open, 2 get map, 3 the read failed (0 = none)
     eResult         : DL_RESULT;    // diag: Data Layer result of the first failure
     udiVarCount     : UDINT;    // diag: entries in the map
     udiRevision     : UDINT;    // diag: map revision
 END_VAR
 VAR_IN_OUT
-    fbMem           : DL_MemUser;       // shared with the FB_AxisRtRead instances
+    fbMem           : DL_MemUser;       // shared with FB_AxisRtRead
     stConfig        : ST_AxisRtConfig;  // read configuration for FB_AxisRtRead
 END_VAR
 VAR
@@ -1789,7 +1764,7 @@ VAR CONSTANT
     STEP_IDLE       : UINT := 0;    // node closed, config invalid
     STEP_OPEN       : UINT := 1;    // OpenMemory issued on entry
     STEP_GET_MAP    : UINT := 2;    // map read and parsed on entry
-    STEP_READY      : UINT := 3;    // config valid, readers read
+    STEP_READY      : UINT := 3;    // config valid, the reader reads
     STEP_FAULT      : UINT := 4;    // node closed, waiting to retry
     ERROR_NONE      : UINT := 0;
     ERROR_OPEN      : UINT := 1;
@@ -1953,23 +1928,13 @@ udiRevision   := _stConfig.udiRevision;
       </pou>
       <pou name="FB_AxisRtRead" pouType="functionBlock">
         <interface>
-          <inputVars>
-            <variable name="iAxis">
-              <type>
-                <INT />
-              </type>
-              <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">axis index into stConfig.astAxis and astStatus (GVL_Axes.AX1 ...)</xhtml>
-              </documentation>
-            </variable>
-          </inputVars>
           <outputVars>
             <variable name="bValid">
               <type>
                 <BOOL />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">astStatus[iAxis] was read this scan</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">the buffer was read this scan and every axis found in the map was copied</xhtml>
               </documentation>
             </variable>
             <variable name="bError">
@@ -1980,12 +1945,30 @@ udiRevision   := _stConfig.udiRevision;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">the read failed although the config is valid: feed to FB_AxisRtMap.bReadFault</xhtml>
               </documentation>
             </variable>
-            <variable name="bNotInMap">
+            <variable name="abValid">
               <type>
-                <BOOL />
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">the axis or some of its fields are not in the map (cyclic status enabled? name right?)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: axis read this scan</xhtml>
+              </documentation>
+            </variable>
+            <variable name="abNotInMap">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">diag: axis or some of its fields not in the map (cyclic status enabled? name right?)</xhtml>
               </documentation>
             </variable>
             <variable name="eResult">
@@ -2016,7 +1999,7 @@ udiRevision   := _stConfig.udiRevision;
                 </array>
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">only astStatus[iAxis] is written</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">cyclic status per axis, indexed like GVL_Axes</xhtml>
               </documentation>
             </variable>
           </inOutVars>
@@ -2031,11 +2014,6 @@ udiRevision   := _stConfig.udiRevision;
             </variable>
           </inOutVars>
           <localVars>
-            <variable name="_bIndexOk">
-              <type>
-                <BOOL />
-              </type>
-            </variable>
             <variable name="_bValid">
               <type>
                 <BOOL />
@@ -2046,9 +2024,24 @@ udiRevision   := _stConfig.udiRevision;
                 <BOOL />
               </type>
             </variable>
-            <variable name="_bNotInMap">
+            <variable name="_abValid">
               <type>
-                <BOOL />
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="_abNotInMap">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <BOOL />
+                  </baseType>
+                </array>
               </type>
             </variable>
             <variable name="_bCopyOk">
@@ -2064,12 +2057,17 @@ udiRevision   := _stConfig.udiRevision;
                 <simpleValue value="DL_RESULT.DL_OK" />
               </initialValue>
             </variable>
+            <variable name="_iAxis">
+              <type>
+                <INT />
+              </type>
+            </variable>
             <variable name="_stOfs">
               <type>
                 <derived name="ST_AxisRtOffsets" />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml">this axis's offsets</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">offsets of the axis being copied</xhtml>
               </documentation>
             </variable>
             <variable name="_pData">
@@ -2093,6 +2091,19 @@ udiRevision   := _stConfig.udiRevision;
               <type>
                 <derived name="ST_AxisCyclicStatus" />
               </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">the axis being copied</xhtml>
+              </documentation>
+            </variable>
+            <variable name="_astStatus">
+              <type>
+                <array>
+                  <dimension lower="0" upper="GVL_Axes.LAST_AXIS" />
+                  <baseType>
+                    <derived name="ST_AxisCyclicStatus" />
+                  </baseType>
+                </array>
+              </type>
             </variable>
             <variable name="_stCleared">
               <type>
@@ -2107,33 +2118,33 @@ udiRevision   := _stConfig.udiRevision;
             <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
               <InterfaceAsPlainText>
                 <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_AxisRtRead
-VAR_INPUT
-    iAxis           : INT;          // axis index into stConfig.astAxis and astStatus (GVL_Axes.AX1 ...)
-END_VAR
 VAR_OUTPUT
-    bValid          : BOOL;         // astStatus[iAxis] was read this scan
+    bValid          : BOOL;         // the buffer was read this scan and every axis found in the map was copied
     bError          : BOOL;         // the read failed although the config is valid: feed to FB_AxisRtMap.bReadFault
-    bNotInMap       : BOOL;         // the axis or some of its fields are not in the map (cyclic status enabled? name right?)
+    abValid         : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;    // diag: axis read this scan
+    abNotInMap      : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;    // diag: axis or some of its fields not in the map (cyclic status enabled? name right?)
     eResult         : DL_RESULT;    // diag: result of this scan's read
 END_VAR
 VAR_IN_OUT
     fbMem           : DL_MemUser;   // the DL_MemUser opened by FB_AxisRtMap
-    astStatus       : ARRAY[0..GVL_Axes.LAST_AXIS] OF ST_AxisCyclicStatus;     // only astStatus[iAxis] is written
+    astStatus       : ARRAY[0..GVL_Axes.LAST_AXIS] OF ST_AxisCyclicStatus;     // cyclic status per axis, indexed like GVL_Axes
 END_VAR
 VAR_IN_OUT CONSTANT
     stConfig        : ST_AxisRtConfig;  // from FB_AxisRtMap
 END_VAR
 VAR
-    _bIndexOk       : BOOL;
     _bValid         : BOOL;
     _bError         : BOOL;
-    _bNotInMap      : BOOL;
+    _abValid        : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;
+    _abNotInMap     : ARRAY[0..GVL_Axes.LAST_AXIS] OF BOOL;
     _bCopyOk        : BOOL;
     _eResult        : DL_RESULT := DL_RESULT.DL_OK;
-    _stOfs          : ST_AxisRtOffsets;     // this axis's offsets
+    _iAxis          : INT;
+    _stOfs          : ST_AxisRtOffsets;     // offsets of the axis being copied
     _pData          : POINTER TO BYTE;      // start of the RT buffer, only valid between Begin/EndAccess
     _udiSize        : UDINT;
-    _stStatus       : ST_AxisCyclicStatus;
+    _stStatus       : ST_AxisCyclicStatus;  // the axis being copied
+    _astStatus      : ARRAY[0..GVL_Axes.LAST_AXIS] OF ST_AxisCyclicStatus;
     _stCleared      : ST_AxisCyclicStatus;  // never written: all FALSE / 0
 END_VAR
 </xhtml>
@@ -2143,70 +2154,72 @@ END_VAR
         </interface>
         <body>
           <ST>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">_bIndexOk  := iAxis &gt;= 0 AND iAxis &lt;= GVL_Axes.LAST_AXIS;
-_bValid    := FALSE;
-_bError    := FALSE;
-_bNotInMap := FALSE;
-_eResult   := DL_RESULT.DL_OK;
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// Start from "nothing read": every axis cleared, so DataValid is FALSE unless copied below
+_bValid  := FALSE;
+_bError  := FALSE;
+_eResult := DL_RESULT.DL_OK;
+FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+    _astStatus[_iAxis]  := _stCleared;
+    _abValid[_iAxis]    := FALSE;
+    _abNotInMap[_iAxis] := stConfig.bValid AND NOT stConfig.astAxis[_iAxis].bComplete;
+END_FOR
 
-IF stConfig.bValid AND _bIndexOk THEN
-    _stOfs := stConfig.astAxis[iAxis];
-    _bNotInMap := NOT _stOfs.bComplete;
-    IF _stOfs.bComplete THEN
-        // BeginAccess locks the buffer against other users, so EndAccess always follows,
-        // with only the copy in between.
-        _eResult := fbMem.BeginAccess(Data =&gt; _pData, Revision := stConfig.udiRevision);
-        IF _eResult = DL_RESULT.DL_OK THEN
-            fbMem.GetSize(SizeBytes =&gt; _udiSize);
-            // Every field is copied; any copy outside the buffer fails the whole read
-            _bCopyOk := TRUE;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_DATA_VALID],              pDst := ADR(_stStatus.DataValid),           udiSize := SIZEOF(_stStatus.DataValid)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_HOMED],                   pDst := ADR(_stStatus.Homed),               udiSize := SIZEOF(_stStatus.Homed)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_STANDSTILL],              pDst := ADR(_stStatus.Standstill),          udiSize := SIZEOF(_stStatus.Standstill)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_POWER_READY],             pDst := ADR(_stStatus.PowerReady),          udiSize := SIZEOF(_stStatus.PowerReady)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_POWER_ON],                pDst := ADR(_stStatus.PowerOn),             udiSize := SIZEOF(_stStatus.PowerOn)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_HAS_ERROR],               pDst := ADR(_stStatus.HasError),            udiSize := SIZEOF(_stStatus.HasError)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_HAS_WARNING],             pDst := ADR(_stStatus.HasWarning),          udiSize := SIZEOF(_stStatus.HasWarning)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_AXIS_FOLLOW_COMMAND],     pDst := ADR(_stStatus.AxisFollowCommand),   udiSize := SIZEOF(_stStatus.AxisFollowCommand)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_POSITION],             pDst := ADR(_stStatus.InPosition),          udiSize := SIZEOF(_stStatus.InPosition)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_VELOCITY],             pDst := ADR(_stStatus.InVelocity),          udiSize := SIZEOF(_stStatus.InVelocity)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_TORQUE],               pDst := ADR(_stStatus.InTorque),            udiSize := SIZEOF(_stStatus.InTorque)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_SYNC_WINDOW],          pDst := ADR(_stStatus.InSyncWindow),        udiSize := SIZEOF(_stStatus.InSyncWindow)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_SYNCHRONIZATION],      pDst := ADR(_stStatus.InSynchronization),   udiSize := SIZEOF(_stStatus.InSynchronization)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_OVERRIDE_IS_ZERO],        pDst := ADR(_stStatus.OverrideIsZero),      udiSize := SIZEOF(_stStatus.OverrideIsZero)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_TORQUE_CTRL_POS_VEL_LIM], pDst := ADR(_stStatus.TorqueCtrlPosVelLim), udiSize := SIZEOF(_stStatus.TorqueCtrlPosVelLim)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_TORQUE_CTRL_NEG_VEL_LIM], pDst := ADR(_stStatus.TorqueCtrlNegVelLim), udiSize := SIZEOF(_stStatus.TorqueCtrlNegVelLim)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_POS],              pDst := ADR(_stStatus.ActualPos),           udiSize := SIZEOF(_stStatus.ActualPos)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_VEL],              pDst := ADR(_stStatus.ActualVel),           udiSize := SIZEOF(_stStatus.ActualVel)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_TRQ],              pDst := ADR(_stStatus.ActualTRQ),           udiSize := SIZEOF(_stStatus.ActualTRQ)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_TRQ_PERCENT],      pDst := ADR(_stStatus.ActualTRQPercent),    udiSize := SIZEOF(_stStatus.ActualTRQPercent)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_DRIVE_STATUS_WORD],       pDst := ADR(_stStatus.DriveStatusWord),     udiSize := SIZEOF(_stStatus.DriveStatusWord)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_DEVICE_ERROR_CODE],       pDst := ADR(_stStatus.DeviceErrorCode),     udiSize := SIZEOF(_stStatus.DeviceErrorCode)) AND _bCopyOk;
-            _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_PLC_OPEN_STATE],          pDst := ADR(_stStatus.PlcOpenState),        udiSize := SIZEOF(_stStatus.PlcOpenState)) AND _bCopyOk;
-            IF _bCopyOk THEN
-                _bValid := TRUE;
-            ELSE
-                _eResult := DL_RESULT.DL_SIZE_MISMATCH;     // a field lies outside the buffer
+IF stConfig.bValid THEN
+    // BeginAccess locks the buffer against other users, so EndAccess always follows,
+    // with only the copy in between.
+    _eResult := fbMem.BeginAccess(Data =&gt; _pData, Revision := stConfig.udiRevision);
+    IF _eResult = DL_RESULT.DL_OK THEN
+        fbMem.GetSize(SizeBytes =&gt; _udiSize);
+        _bValid := TRUE;
+        FOR _iAxis := 0 TO GVL_Axes.LAST_AXIS DO
+            IF stConfig.astAxis[_iAxis].bComplete THEN
+                _stOfs := stConfig.astAxis[_iAxis];
+                // Every field is copied; any copy outside the buffer fails this axis and the read
+                _bCopyOk := TRUE;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_DATA_VALID],              pDst := ADR(_stStatus.DataValid),           udiSize := SIZEOF(_stStatus.DataValid)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_HOMED],                   pDst := ADR(_stStatus.Homed),               udiSize := SIZEOF(_stStatus.Homed)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_STANDSTILL],              pDst := ADR(_stStatus.Standstill),          udiSize := SIZEOF(_stStatus.Standstill)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_POWER_READY],             pDst := ADR(_stStatus.PowerReady),          udiSize := SIZEOF(_stStatus.PowerReady)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_POWER_ON],                pDst := ADR(_stStatus.PowerOn),             udiSize := SIZEOF(_stStatus.PowerOn)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_HAS_ERROR],               pDst := ADR(_stStatus.HasError),            udiSize := SIZEOF(_stStatus.HasError)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_HAS_WARNING],             pDst := ADR(_stStatus.HasWarning),          udiSize := SIZEOF(_stStatus.HasWarning)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_AXIS_FOLLOW_COMMAND],     pDst := ADR(_stStatus.AxisFollowCommand),   udiSize := SIZEOF(_stStatus.AxisFollowCommand)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_POSITION],             pDst := ADR(_stStatus.InPosition),          udiSize := SIZEOF(_stStatus.InPosition)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_VELOCITY],             pDst := ADR(_stStatus.InVelocity),          udiSize := SIZEOF(_stStatus.InVelocity)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_TORQUE],               pDst := ADR(_stStatus.InTorque),            udiSize := SIZEOF(_stStatus.InTorque)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_SYNC_WINDOW],          pDst := ADR(_stStatus.InSyncWindow),        udiSize := SIZEOF(_stStatus.InSyncWindow)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_IN_SYNCHRONIZATION],      pDst := ADR(_stStatus.InSynchronization),   udiSize := SIZEOF(_stStatus.InSynchronization)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_OVERRIDE_IS_ZERO],        pDst := ADR(_stStatus.OverrideIsZero),      udiSize := SIZEOF(_stStatus.OverrideIsZero)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_TORQUE_CTRL_POS_VEL_LIM], pDst := ADR(_stStatus.TorqueCtrlPosVelLim), udiSize := SIZEOF(_stStatus.TorqueCtrlPosVelLim)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_TORQUE_CTRL_NEG_VEL_LIM], pDst := ADR(_stStatus.TorqueCtrlNegVelLim), udiSize := SIZEOF(_stStatus.TorqueCtrlNegVelLim)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_POS],              pDst := ADR(_stStatus.ActualPos),           udiSize := SIZEOF(_stStatus.ActualPos)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_VEL],              pDst := ADR(_stStatus.ActualVel),           udiSize := SIZEOF(_stStatus.ActualVel)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_TRQ],              pDst := ADR(_stStatus.ActualTRQ),           udiSize := SIZEOF(_stStatus.ActualTRQ)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_ACTUAL_TRQ_PERCENT],      pDst := ADR(_stStatus.ActualTRQPercent),    udiSize := SIZEOF(_stStatus.ActualTRQPercent)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_DRIVE_STATUS_WORD],       pDst := ADR(_stStatus.DriveStatusWord),     udiSize := SIZEOF(_stStatus.DriveStatusWord)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_DEVICE_ERROR_CODE],       pDst := ADR(_stStatus.DeviceErrorCode),     udiSize := SIZEOF(_stStatus.DeviceErrorCode)) AND _bCopyOk;
+                _bCopyOk := Fn_RtCopy(pData := _pData, udiDataSize := _udiSize, udiOffset := _stOfs.audiOffset[GVL_AxisRtMap.F_PLC_OPEN_STATE],          pDst := ADR(_stStatus.PlcOpenState),        udiSize := SIZEOF(_stStatus.PlcOpenState)) AND _bCopyOk;
+                IF _bCopyOk THEN
+                    _astStatus[_iAxis] := _stStatus;
+                    _abValid[_iAxis]   := TRUE;
+                ELSE
+                    _bValid  := FALSE;
+                    _eResult := DL_RESULT.DL_SIZE_MISMATCH;     // a field lies outside the buffer
+                END_IF
             END_IF
-        END_IF
-        fbMem.EndAccess();
-        _bError := NOT _bValid;
+        END_FOR
     END_IF
-END_IF
-
-// No good read: report the axis as not valid
-IF NOT _bValid THEN
-    _stStatus := _stCleared;
+    fbMem.EndAccess();
+    _bError := NOT _bValid;
 END_IF
 
 // Outputs
-IF _bIndexOk THEN
-    astStatus[iAxis] := _stStatus;
-END_IF
-bValid    := _bValid;
-bError    := _bError;
-bNotInMap := _bNotInMap;
-eResult   := _eResult;
+astStatus  := _astStatus;
+bValid     := _bValid;
+bError     := _bError;
+abValid    := _abValid;
+abNotInMap := _abNotInMap;
+eResult    := _eResult;
 </xhtml>
           </ST>
         </body>
@@ -4620,7 +4633,7 @@ END_VAR
             </array>
           </type>
           <documentation>
-            <xhtml xmlns="http://www.w3.org/1999/xhtml">RT cyclic status, indexed AX1 / AX2 / VM, written by PRG_Main.afbAxisRtRead</xhtml>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">RT cyclic status, indexed AX1 / AX2 / VM, written by PRG_Main.fbAxisRtRead</xhtml>
           </documentation>
         </variable>
         <addData>
@@ -4638,7 +4651,7 @@ VAR_GLOBAL CONSTANT
     asAxisName  : ARRAY[0..LAST_AXIS] OF STRING(15) := ['Ax1', 'Ax2', 'VM'];  // set to the ctrlX MOTION axis names
 END_VAR
 VAR_GLOBAL
-    astStatus   : ARRAY[0..LAST_AXIS] OF ST_AxisCyclicStatus;   // RT cyclic status, indexed AX1 / AX2 / VM, written by PRG_Main.afbAxisRtRead
+    astStatus   : ARRAY[0..LAST_AXIS] OF ST_AxisCyclicStatus;   // RT cyclic status, indexed AX1 / AX2 / VM, written by PRG_Main.fbAxisRtRead
 END_VAR
 </xhtml>
             </InterfaceAsPlainText>
